@@ -1,3 +1,5 @@
+import mongoose from 'mongoose';
+
 const reviewSchema = new mongoose.Schema({
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     course: { type: mongoose.Schema.Types.ObjectId, ref: 'Course', required: true },
@@ -6,5 +8,5 @@ const reviewSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now },
   })
   
-  exports.Review = mongoose.model('Review', reviewSchema)
+  export const Review = mongoose.model('Review', reviewSchema)
   

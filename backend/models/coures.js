@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+import mongoose from 'mongoose';
 
 const courseSchema = new mongoose.Schema({
     title: { type: String, required: true },
@@ -15,5 +15,5 @@ const courseSchema = new mongoose.Schema({
     reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }],
   })
   
-  exports.Course = mongoose.model('Course', courseSchema)
+  export const Course = mongoose.model('Course', courseSchema)
   

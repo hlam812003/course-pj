@@ -1,3 +1,5 @@
+import mongoose from 'mongoose';
+
 const instructorProfileSchema = new mongoose.Schema({
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     bio: { type: String, required: true },
@@ -7,5 +9,5 @@ const instructorProfileSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now },
   })
   
-  exports.InstructorProfile = mongoose.model('InstructorProfile', instructorProfileSchema)
+  export const InstructorProfile = mongoose.model('InstructorProfile', instructorProfileSchema)
   

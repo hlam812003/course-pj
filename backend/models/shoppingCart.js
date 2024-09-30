@@ -1,3 +1,5 @@
+import mongoose from 'mongoose';
+
 const shoppingCartSchema = new mongoose.Schema({
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }, // Người dùng sở hữu giỏ hàng
     courses: [{
@@ -9,4 +11,4 @@ const shoppingCartSchema = new mongoose.Schema({
     updatedAt: { type: Date, default: Date.now }, // Thời gian cập nhật gần nhất
   })
   
-  exports.shoppingCart = mongoose.model('shoppingCar', cartSchema)
+  export const shoppingCart = mongoose.model('shoppingCart', shoppingCartSchema)

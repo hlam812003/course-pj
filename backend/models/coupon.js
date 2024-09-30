@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+import mongoose from 'mongoose';
 
 const couponSchema = new mongoose.Schema({
     code: { type: String, required: true, unique: true },
@@ -9,4 +9,4 @@ const couponSchema = new mongoose.Schema({
   })
   
 
-  exports.Coupon= mongoose.model('Coupon', couponSchema)
+  export const Coupon= mongoose.model('Coupon', couponSchema)

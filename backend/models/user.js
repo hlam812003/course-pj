@@ -1,4 +1,5 @@
-const mongoose = require('mongoose')
+import mongoose from 'mongoose';
+
 const userSchema = new mongoose.Schema({
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
@@ -7,5 +8,5 @@ const userSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now },
   })
   
-  exports.User = mongoose.model('User', userSchema)
+  export const User = mongoose.model('User', userSchema)
   

@@ -1,3 +1,5 @@
+import mongoose from 'mongoose';
+
 const questionSchema = new mongoose.Schema({
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     course: { type: mongoose.Schema.Types.ObjectId, ref: 'Course', required: true },
@@ -7,4 +9,4 @@ const questionSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now },
   })
   
-  exports.Question = mongoose.model('Question', questionSchema)
+  export const Question = mongoose.model('Question', questionSchema)

@@ -1,3 +1,5 @@
+import mongoose from 'mongoose';
+
 const orderSchema = new mongoose.Schema({
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     courses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Course', required: true }],
@@ -6,5 +8,5 @@ const orderSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now },
   })
   
-  exports.Order = mongoose.model('Order', orderSchema)
+  export const Order = mongoose.model('Order', orderSchema)
   
