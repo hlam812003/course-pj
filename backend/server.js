@@ -1,24 +1,28 @@
 import Fastify from 'fastify';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-
+import adminRoutes from './routes/admin.js';
 dotenv.config();
 
-// Kết nối MongoDB
-// mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-//   .then(() => console.log('MongoDB connected'))
-//   .catch(err => console.log('MongoDB connection error:', err));
 
-// Đăng ký các route
-// fastify.register(require('./routes/auth')); // Đăng ký route cho đăng ký người dùng
-
-// Lắng nghe cổng
 const fastify = Fastify({
   logger: true
 })
 
+
+
+
+fastify.register(adminRoutes);
+
 const main = async () => {
   try {
+    mongoose.connect("mongodb+srv://admin-huyhoang:123@cluster0.e0cvr.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0/elearningData")
+    .then(() => {
+      console.log('MongoDB connected');
+    }).catch(err => {
+      console.error('MongoDB connection error:', err);
+    });
+    
     await fastify.listen({ port: 3000 });
     console.log('Server is running on port 3000');
   } catch (err) {
