@@ -1,9 +1,9 @@
 
-import  addUser  from "../services/addUser.js";
-import getAllUsers from "../services/getAllUser.js";
-import getUserById from "../services/getUserById.js";
-import updateUserById from "../services/updateUserById.js";
-import deleteUserById from "../services/deleteUserById.js";
+import  addUser  from "../Controller/addUser.js";
+import getAllUsers from "../Controller/getAllUser.js";
+import getUserById from "../Controller/getUserById.js";
+import updateUserById from "../Controller/updateUserById.js";
+import deleteUserById from "../Controller/deleteUserById.js";
 async function adminRoutes(fastify, options) {
 
     // Lấy tất cả người dùng
