@@ -161,5 +161,31 @@ export const authController = {
             console.log(error);
             res.status(500).send({ message: 'Error refreshing token' });
         }
+    },
+    logout: async (req, res) => {
+        try {
+            // Get refresh token from cookies
+            const refreshToken = req.cookies.refreshToken;
+            if (!refreshToken) {
+                return res.status(403).send({ message: 'Refresh token not found' });
+            }
+
+            // Verify the refresh token
+            const decoded = await res.jwtVerify(refreshToken);
+            if (!decoded) {
+                return res.status(403).send({ message: 'Invalid refresh token' });
+            }
+
+            // Delete the refresh token from Redis
+            await redisClient.del(decoded.id.toString());
+
+            // Clear the refresh token cookie
+            res.clearCookie('refreshToken', { path: '/' });
+
+            res.status(200).send({ message: 'User logged out successfully' });
+        } catch (error) {
+            console.log(error);
+            res.status(500).send({ message: 'Error logging out' });
+        }
     }
 };
