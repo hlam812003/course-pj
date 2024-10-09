@@ -1,8 +1,8 @@
 import Fastify from 'fastify';
+import fastifyJwt from '@fastify/jwt';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import adminRoutes from './routes/admin.js';
-import fastifyJwt from 'fastify-jwt';
 
 dotenv.config();
 
