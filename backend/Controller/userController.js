@@ -1,3 +1,7 @@
+import { User } from "../models/user";
+import mongoose from "mongoose";
+import bcrypt from "bcrypt";
+
 export const userController = {
     deleteUserById: async(request, reply) => {
         try {
