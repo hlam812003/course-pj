@@ -1,5 +1,6 @@
 import Fastify from 'fastify';
-import mongoose from 'mongoose';
+import fastifyJwt from '@fastify/jwt';
+import connectToDatabase from './db.js';
 import dotenv from 'dotenv';
 //import adminRoutes from './routes/admin.js';
 import UserRoutes from './routes/user.js';
@@ -8,15 +9,12 @@ import fastifyJwt from '@fastify/jwt';
 
 dotenv.config();
 
-
 const fastify = Fastify({
   logger: true
-})
+});
 
-
-fastify.register(fastifyJwt, 
-{
-  secret: 'supersecret', 
+fastify.register(fastifyJwt, {
+  secret: process.env.JWT_SECRET,
 });
 
 //fastify,register(AdminRoutes);
@@ -25,21 +23,16 @@ fastify.register(UserRoutes);
 
 
 
-const main = async () => {
+const startServer = async () => {
   try {
-    mongoose.connect("mongodb+srv://admin-huyhoang:123@cluster0.e0cvr.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0/elearningData")
-    .then(() => {
-      console.log('MongoDB connected');
-    }).catch(err => {
-      console.error('MongoDB connection error:', err);
-    });
-
-    await fastify.listen({ port: 3000 });
-    console.log('Server is running on port 3000');
+    await connectToDatabase();
+    const port = process.env.PORT || 3000;
+    await fastify.listen({ port });
+    console.log(`Server is running on port ${port}`);
   } catch (err) {
     fastify.log.error(err);
     process.exit(1);
   }
-}
+};
 
-main();
+startServer();
