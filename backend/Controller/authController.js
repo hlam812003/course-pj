@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import { User } from '../models/user';
+import { User } from '../models/user.js';
 import redis from 'redis';
 
 const redisClient = redis.createClient();
@@ -68,7 +68,7 @@ export const authController = {
                 role: user.role 
             },  
             {
-                expiresIn: '2h' 
+                expiresIn: '1h' 
             });
 
             // Generate refresh token
@@ -132,7 +132,7 @@ export const authController = {
                 role: user.role 
             },  
             {
-                expiresIn: '2h' 
+                expiresIn: '1h' 
             });
 
             // Generate a new refresh token
@@ -187,5 +187,6 @@ export const authController = {
             console.log(error);
             res.status(500).send({ message: 'Error logging out' });
         }
-    }
+    },
+
 };

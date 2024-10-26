@@ -1,3 +1,4 @@
+import { User } from "../models/user.js";
 export const middlewaresController = {
 
     verifyToken: async (request, reply, next) => {

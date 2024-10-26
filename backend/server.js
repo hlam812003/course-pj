@@ -1,8 +1,10 @@
 import Fastify from 'fastify';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import adminRoutes from './routes/admin.js';
-import fastifyJwt from 'fastify-jwt';
+//import adminRoutes from './routes/admin.js';
+import UserRoutes from './routes/user.js';
+
+import fastifyJwt from '@fastify/jwt';
 
 dotenv.config();
 
@@ -17,7 +19,11 @@ fastify.register(fastifyJwt,
   secret: 'supersecret', 
 });
 
-fastify.register(adminRoutes);
+//fastify,register(AdminRoutes);
+
+fastify.register(UserRoutes);
+
+
 
 const main = async () => {
   try {
