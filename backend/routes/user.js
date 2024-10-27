@@ -8,7 +8,6 @@ async function UserRoutes(fastify, options) {
 
     // Login user
     fastify.post('/users/login', {
-        preHandler: authController.requestRefreshToken,
         handler: authController.LoginUser
     });
 

@@ -12,6 +12,7 @@
   "author": "HuyHoang-22110025",
   "license": "ISC",
   "dependencies": {
+    "@fastify/cookie": "^11.0.1",
     "@fastify/jwt": "^9.0.1",
     "axios": "^1.7.7",
     "bcrypt": "^5.1.1",

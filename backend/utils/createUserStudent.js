@@ -12,6 +12,7 @@ async function createUsers() {
     for (const user of users) {
         try {
             const response = await axios.post('http://localhost:3000/users', user);
+            console.log(user)
             console.log(`User created: ${JSON.stringify(response.data)}`);
         } catch (error) {
             console.error('Error creating user:', error.message); 

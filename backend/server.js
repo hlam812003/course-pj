@@ -1,27 +1,31 @@
-import Fastify from 'fastify';
-import fastifyJwt from '@fastify/jwt';
-import connectToDatabase from './db.js';
-import dotenv from 'dotenv';
+import Fastify from "fastify";
+import connectToDatabase from "./db.js";
+import dotenv from "dotenv";
 //import adminRoutes from './routes/admin.js';
-import UserRoutes from './routes/user.js';
+import UserRoutes from "./routes/user.js";
 
-import fastifyJwt from '@fastify/jwt';
+import * as fastifyJwt from "@fastify/jwt";
+
+import fastifyCookie from "@fastify/cookie";
 
 dotenv.config();
 
 const fastify = Fastify({
-  logger: true
+  logger: true,
 });
 
 fastify.register(fastifyJwt, {
-  secret: process.env.JWT_SECRET,
+  secret: "supersecret",
 });
 
 //fastify,register(AdminRoutes);
+fastify.register(fastifyCookie, {
+  secret: "my-secret", // for cookies signature
+  hook: "onRequest", // set to false to disable cookie autoparsing or set autoparsing on any of the following hooks: 'onRequest', 'preParsing', 'preHandler', 'preValidation'. default: 'onRequest'
+  parseOptions: {}, // options for parsing cookies
+});
 
 fastify.register(UserRoutes);
-
-
 
 const startServer = async () => {
   try {
