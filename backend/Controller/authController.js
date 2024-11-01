@@ -79,32 +79,28 @@ export const authController = {
         expiresIn: "1d",
       });
 
-      // Generate refresh token
-      //   const refreshToken = await req.server.jwt.sign({
-      //     {
-      //       id: user._id,
-      //       username: user.username,
-      //       role: user.role,
-      //     },
-      //     {
-      //       expiresIn: "7d",
-      //     }
-      //   );
-      //   // Store refresh token in Redis
-      //   await redisClient.set(user._id.toString(), refreshToken);
+      //Generate refresh token
+      const refreshToken = await req.server.jwt.sign(
+        {
+          id: user._id,
+          username: user.username,
+          role: user.role,
+        },
+        {
+          expiresIn: "7d",
+        }
+      );
 
-      //   console.log(refreshToken);
+      // Set refresh token as an HTTP-only cookie
+      res.setCookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: true,
+        path: "/",
+        sameSite: "none",
+        signed: true,
+      });
 
-      //   // Set refresh token as an HTTP-only cookie
-      //   await res.setCookie("refreshToken", refreshToken, {
-      //     httpOnly: true,
-      //     secure: true,
-      //     path: "/",
-      //     sameSite: "none",
-      //     signed: true,
-      //   });
-
-      res.status(200).send({ user, token });
+      res.status(200).send({ user, token, refreshToken });
     } catch (error) {
       console.log(error);
       res.status(500).send({ message: "Error logging in" });

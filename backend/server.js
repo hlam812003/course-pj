@@ -17,13 +17,10 @@ const fastify = Fastify({
 fastify.register(fastifyJwt, {
   secret: "supersecret",
 });
-
-//fastify,register(AdminRoutes);
 fastify.register(fastifyCookie, {
   secret: "my-secret", // for cookies signature
-  hook: "onRequest", // set to false to disable cookie autoparsing or set autoparsing on any of the following hooks: 'onRequest', 'preParsing', 'preHandler', 'preValidation'. default: 'onRequest'
-  parseOptions: {}, // options for parsing cookies
 });
+//fastify,register(AdminRoutes);
 
 fastify.register(UserRoutes);
 
