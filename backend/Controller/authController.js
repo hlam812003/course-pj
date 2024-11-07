@@ -135,7 +135,7 @@ export const authController = {
       }
 
       // Generate a new access token
-      const newAccessToken = await res.fastify.jwt.sign(
+      const newAccessToken = await res.server.jwt.sign(
         {
           id: user._id,
           username: user.username,
@@ -147,7 +147,7 @@ export const authController = {
       );
 
       // Generate a new refresh token
-      const newRefreshToken = await res.fastify.jwt.sign(
+      const newRefreshToken = await res.server.jwt.sign(
         {
           id: user._id,
           username: user.username,
