@@ -27,12 +27,13 @@ async function createCategories() {
   try {
     for (const category of categories) {
       const response = await axios.post(
-        "http://localhost:5000/api/categories",
+        "http://localhost:3000/categories",
         category
       );
       console.log("Category created:", response.data);
     }
   } catch (error) {
+    console.log(error);
     console.error(
       "Error creating category:",
       error.response?.data || error.message
