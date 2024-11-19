@@ -1,4 +1,5 @@
-import { orderController } from "../controllers/orderController.js";
+import { orderController } from "../controllers/oderController.js";
+import { middlewaresController } from "../middlewares/middlewaresController.js";
 
 async function orderRoutes(fastify, options) {
   fastify.get("/orders/self", {

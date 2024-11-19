@@ -1,4 +1,5 @@
 import { categoryController } from "../controllers/categoryController.js";
+import { middlewaresController } from "../middlewares/middlewaresController.js";
 
 async function categoryRoutes(fastify, options) {
   fastify.get("/categories", { handler: categoryController.getAllCategories });
@@ -10,12 +11,12 @@ async function categoryRoutes(fastify, options) {
 
   fastify.put("/categories/:id", {
     preHandler: middlewaresController.verifyAdminToken,
-    handler: categoryController.updateCategory,
+    handler: categoryController.updateCategoryById,
   });
 
   fastify.delete("/categories/:id", {
     preHandler: middlewaresController.verifyAdminToken,
-    handler: categoryController.deleteCategory,
+    handler: categoryController.deleteCategoryById,
   });
 }
 

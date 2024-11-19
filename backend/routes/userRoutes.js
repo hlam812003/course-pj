@@ -1,4 +1,5 @@
 import { userController } from "../controllers/userController.js";
+import { middlewaresController } from "../middlewares/middlewaresController.js";
 
 async function userRoutes(fastify, options) {
   fastify.get("/user/:id", {

@@ -1,4 +1,5 @@
 import { courseController } from "../controllers/courseController.js";
+import { middlewaresController } from "../middlewares/middlewaresController.js";
 
 async function courseRoutes(fastify, options) {
   fastify.get("/courses", { handler: courseController.getAllCourses });
@@ -11,12 +12,12 @@ async function courseRoutes(fastify, options) {
 
   fastify.put("/courses/:id", {
     preHandler: middlewaresController.verifyInstructorToken,
-    handler: courseController.updateCourse,
+    handler: courseController.updateCourseById,
   });
 
   fastify.delete("/courses/:id", {
     preHandler: middlewaresController.verifyAdminToken,
-    handler: courseController.deleteCourse,
+    handler: courseController.deleteCourseById,
   });
 }
 

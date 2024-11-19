@@ -1,10 +1,12 @@
 import axios from "axios";
 import { User } from "../models/user.js";
+import mongoose from "mongoose";
+import { mongo } from "mongoose";
 const YOUTUBE_API_KEY = "AIzaSyBKfyFU9dcPao9rgpUKeBV53x8jooCDJAw";
 
-const YOUTUBE_CHANNEL_ID = "UCGwuxdEeCf0TIA2RbPOj-8g"; // TechWorldwithNana Channel ID
+const YOUTUBE_CHANNEL_ID = "UCbBt6Ks7M5BZx_GHgGO_UNQ";
 
-async function createInstructor() {
+export async function createInstructor() {
   try {
     // 1. Fetch channel data from YouTube API
     const channelResponse = await axios.get(
@@ -12,7 +14,7 @@ async function createInstructor() {
     );
 
     const channelData = channelResponse.data.items[0].snippet;
-
+    console.log("Channel data:", channelData);
     // 2. Create user data
     const userData = {
       username: channelData.customUrl.replace("@", ""),
@@ -26,13 +28,15 @@ async function createInstructor() {
       "http://localhost:3000/register",
       userData
     );
-    const createdUser = userResponse.data;
-    // Get the user userWithId = User.findOne(createdUser._id);
-    const sampleUser = await User.findOne({ username: userData.username });
+
+    const user = await User.findOne({ username: "stanfordgsb" });
+    console.log(user);
+
+    console.log("User created:", user);
     //4. Create instructor profile data
     try {
       const instructorProfileData = {
-        user: sampleUser._id,
+        user: user._id,
         bio: channelData.description,
         expertise: ["Technology", "Programming"], // Adjust based on channel content
         profilePicture: channelData.thumbnails.default.url,

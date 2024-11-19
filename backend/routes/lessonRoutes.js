@@ -1,4 +1,5 @@
 import { lessonController } from "../controllers/lessonController.js";
+import { middlewaresController } from "../middlewares/middlewaresController.js";
 
 async function lessonRoutes(fastify, options) {
   fastify.get("/lessons/:courseId", {

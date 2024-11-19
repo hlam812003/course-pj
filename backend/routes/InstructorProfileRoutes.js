@@ -1,6 +1,11 @@
 import { instructorProfileController } from "../controllers/instructorProfileController.js";
+import { middlewaresController } from "../middlewares/middlewaresController.js";
 
 async function profileRoutes(fastify, options) {
+  fastify.post("/instructorProfiles", {
+    //preHandler: middlewaresController.verifyInstructorToken,
+    handler: instructorProfileController.createInstructorProfile,
+  });
   fastify.get("/instructorProfile", {
     handler: instructorProfileController.getAllInstructorProfiles,
   });
@@ -9,7 +14,7 @@ async function profileRoutes(fastify, options) {
   });
   fastify.put("/instructorProfile", {
     preHandler: middlewaresController.verifyInstructorToken,
-    handler: profileController.modifyInstructorProfile,
+    handler: instructorProfileController.updateInstructorProfileById,
   });
 }
 

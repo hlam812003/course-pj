@@ -1,9 +1,10 @@
 import { enrollmentController } from "../controllers/enrollmentController.js";
+import { middlewaresController } from "../middlewares/middlewaresController.js";
 
 async function enrollmentRoutes(fastify, options) {
   fastify.get("/enrollments/course/:courseId", {
     preHandler: middlewaresController.verifyInstructorToken,
-    handler: enrollmentController.getEnrollmentsByCourse,
+    handler: enrollmentController.enrollInCourse,
   });
 
   fastify.post("/enrollments/course/:courseId", {

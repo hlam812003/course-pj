@@ -1,4 +1,5 @@
 import { progressController } from "../controllers/progressController.js";
+import { middlewaresController } from "../middlewares/middlewaresController.js";
 
 async function progressRoutes(fastify, options) {
   fastify.get("/progress/:courseId", {

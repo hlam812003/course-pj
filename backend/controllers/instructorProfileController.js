@@ -8,11 +8,6 @@ export const instructorProfileController = {
       const { user, bio, expertise, profilePicture, socialLinks } =
         request.body;
 
-      // Ensure the user exists in the database
-      if (!mongoose.Types.ObjectId.isValid(user)) {
-        return reply.status(400).send({ message: "Invalid user ID" });
-      }
-
       const newProfile = new InstructorProfile({
         user,
         bio,
@@ -29,12 +24,10 @@ export const instructorProfileController = {
       });
     } catch (error) {
       console.error("Error creating instructor profile:", error);
-      return reply
-        .status(500)
-        .send({
-          message: "Error creating instructor profile",
-          error: error.message,
-        });
+      return reply.status(500).send({
+        message: "Error creating instructor profile",
+        error: error.message,
+      });
     }
   },
 
@@ -58,12 +51,10 @@ export const instructorProfileController = {
       return reply.status(200).send(profile);
     } catch (error) {
       console.error("Error fetching instructor profile by ID:", error);
-      return reply
-        .status(500)
-        .send({
-          message: "Error fetching instructor profile",
-          error: error.message,
-        });
+      return reply.status(500).send({
+        message: "Error fetching instructor profile",
+        error: error.message,
+      });
     }
   },
 
@@ -75,12 +66,10 @@ export const instructorProfileController = {
       return reply.status(200).send(profiles);
     } catch (error) {
       console.error("Error fetching instructor profiles:", error);
-      return reply
-        .status(500)
-        .send({
-          message: "Error fetching instructor profiles",
-          error: error.message,
-        });
+      return reply.status(500).send({
+        message: "Error fetching instructor profiles",
+        error: error.message,
+      });
     }
   },
 
@@ -110,12 +99,10 @@ export const instructorProfileController = {
       });
     } catch (error) {
       console.error("Error updating instructor profile:", error);
-      return reply
-        .status(500)
-        .send({
-          message: "Error updating instructor profile",
-          error: error.message,
-        });
+      return reply.status(500).send({
+        message: "Error updating instructor profile",
+        error: error.message,
+      });
     }
   },
 
@@ -141,12 +128,10 @@ export const instructorProfileController = {
         .send({ message: "Instructor profile deleted successfully" });
     } catch (error) {
       console.error("Error deleting instructor profile:", error);
-      return reply
-        .status(500)
-        .send({
-          message: "Error deleting instructor profile",
-          error: error.message,
-        });
+      return reply.status(500).send({
+        message: "Error deleting instructor profile",
+        error: error.message,
+      });
     }
   },
 };
