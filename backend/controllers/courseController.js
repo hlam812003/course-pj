@@ -1,4 +1,4 @@
-import { Course } from "../models/coures.js";
+import { Course } from "../models/course.js";
 import mongoose from "mongoose";
 
 export const courseController = {
