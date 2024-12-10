@@ -60,16 +60,46 @@ export const lessonController = {
   getLessonsByCourseId: async (request, reply) => {
     try {
       const { courseId } = request.params;
-
+      const { page = 1, limit = 30 } = request.query; // Default values for pagination
+      ///lessons/:courseId?page=2&limit=5
       if (!mongoose.Types.ObjectId.isValid(courseId)) {
         return reply.status(400).send({ message: "Invalid course ID" });
       }
 
-      const lessons = await Lesson.find({ course: courseId }).populate(
-        "course"
-      );
+      // Parse pagination parameters
+      const pageNumber = parseInt(page, 10);
+      const pageSize = parseInt(limit, 10);
 
-      return reply.status(200).send(lessons);
+      if (
+        isNaN(pageNumber) ||
+        pageNumber <= 0 ||
+        isNaN(pageSize) ||
+        pageSize <= 0
+      ) {
+        return reply
+          .status(400)
+          .send({ message: "Invalid pagination parameters" });
+      }
+
+      // Retrieve lessons with pagination
+      const lessons = await Lesson.find({ course: courseId })
+        .populate("course")
+        .skip((pageNumber - 1) * pageSize)
+        .limit(pageSize);
+
+      // Get total count for pagination metadata
+      const totalLessons = await Lesson.countDocuments({ course: courseId });
+      const totalPages = Math.ceil(totalLessons / pageSize);
+
+      return reply.status(200).send({
+        lessons,
+        pagination: {
+          totalLessons,
+          totalPages,
+          currentPage: pageNumber,
+          pageSize,
+        },
+      });
     } catch (error) {
       console.error("Error fetching lessons by course ID:", error);
       return reply

@@ -63,10 +63,22 @@ export const progressController = {
         return reply.status(400).send({ message: "Invalid lesson ID" });
       }
 
-      const progress = await Progress.findOne({ user, course });
+      let progress = await Progress.findOne({ user, course });
 
+      // If progress does not exist, initialize it
       if (!progress) {
-        return reply.status(404).send({ message: "Progress not found" });
+        const initializeResponse = await progressController.initializeProgress(
+          {
+            body: { user, course },
+          },
+          reply
+        );
+
+        if (initializeResponse.statusCode !== 201) {
+          return; // Stop execution if initialization fails
+        }
+
+        progress = initializeResponse.data.progress; // Extract the initialized progress
       }
 
       // Check if the lesson is already marked as completed
@@ -74,12 +86,19 @@ export const progressController = {
         return reply.status(400).send({ message: "Lesson already completed" });
       }
 
+      // Add lesson to completedLessons
       progress.completedLessons.push(lessonId);
 
       // Calculate progress percentage (based on total number of lessons in the course)
-      const totalLessons = await Course.findById(course).populate("lessons");
+      const courseData = await Course.findById(course).populate("lessons");
+      if (!courseData || !courseData.lessons.length) {
+        return reply
+          .status(400)
+          .send({ message: "Course or lessons not found" });
+      }
+
       const progressPercentage =
-        (progress.completedLessons.length / totalLessons.lessons.length) * 100;
+        (progress.completedLessons.length / courseData.lessons.length) * 100;
       progress.progressPercentage = Math.min(progressPercentage, 100); // Ensure progress doesn't exceed 100%
 
       // Update the last accessed date

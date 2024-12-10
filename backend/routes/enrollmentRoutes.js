@@ -4,22 +4,22 @@ import { middlewaresController } from "../middlewares/middlewaresController.js";
 async function enrollmentRoutes(fastify, options) {
   fastify.get("/enrollments/course/:courseId", {
     preHandler: middlewaresController.verifyInstructorToken,
-    handler: enrollmentController.enrollInCourse,
+    handler: enrollmentController.getEnrollmentsByCourseId,
+  });
+
+  fastify.get("/enrollments/user/:userId", {
+    preHandler: middlewaresController.verifyUserToken,
+    handler: enrollmentController.getEnrollmentsByUserId,
   });
 
   fastify.post("/enrollments/course/:courseId", {
-    preHandler: middlewaresController,
-    handler: enrollmentController.createEnrollment,
-  });
-
-  fastify.put("/enrollments/:id", {
-    preHandler: middlewaresController.verifyAdminToken,
-    handler: enrollmentController.updateEnrollment,
+    preHandler: middlewaresController.verifyUserToken,
+    handler: enrollmentController.enrollInCourse,
   });
 
   fastify.delete("/enrollments/:id", {
     preHandler: middlewaresController.verifyAdminToken,
-    handler: enrollmentController.deleteEnrollment,
+    handler: enrollmentController.cancelEnrollment,
   });
 }
 

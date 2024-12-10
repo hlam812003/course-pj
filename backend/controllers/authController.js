@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import { User } from "../models/user.js";
+import { shoppingCart } from "../models/shoppingCart.js";
 
 import redis from "redis";
 import fastify from "fastify";

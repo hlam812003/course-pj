@@ -2,14 +2,25 @@ import { orderController } from "../controllers/oderController.js";
 import { middlewaresController } from "../middlewares/middlewaresController.js";
 
 async function orderRoutes(fastify, options) {
-  fastify.get("/orders/self", {
+  fastify.get("/orders/user/:userId", {
     preHandler: middlewaresController.verifyUserToken,
-    handler: orderController.getSelfOrders,
+    handler: orderController.getOrdersByUserId,
   });
-
-  fastify.put("/orders/self/:orderId", {
+  fastify.get("/orders/:orderId", {
     preHandler: middlewaresController.verifyUserToken,
-    handler: orderController.modifySelfOrder,
+    handler: orderController.getOrderById,
+  });
+  fastify.put("/orders/:orderId", {
+    preHandler: middlewaresController.verifyAdminToken,
+    handler: orderController.updatePaymentStatus,
+  });
+  fastify.post("/orders/user/:userId", {
+    preHandler: middlewaresController.verifyUserToken,
+    handler: orderController.createOrder,
+  });
+  fastify.delete("/orders/:orderId", {
+    preHandler: middlewaresController.verifyUserToken,
+    handler: orderController.deleteOrderById,
   });
 }
 

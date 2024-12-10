@@ -12,8 +12,6 @@ import orderRoutes from "./routes/orderRoutes.js";
 import progressRoutes from "./routes/progressRoutes.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
-//import { createInstructor } from "./utils/createInstructors.js";
-import { createCourseWithLessonsFromPlaylist } from "./utils/createCourseLesson.js";
 
 import * as fastifyJwt from "@fastify/jwt";
 
@@ -32,19 +30,18 @@ fastify.register(fastifyJwt, {
 fastify.register(fastifyCookie, {
   secret: "my-secret", // for cookies signature
 });
-//fastify,register(AdminRoutes);
 
 fastify.register(athRoutes);
-//fastify.register(cartRoutes);
+fastify.register(cartRoutes);
 fastify.register(categoryRoutes);
-//fastify.register(couponRoutes);
-//fastify.register(courseRoutes);
-//fastify.register(enrollmentRoutes);
+fastify.register(couponRoutes);
+fastify.register(courseRoutes);
+fastify.register(enrollmentRoutes);
 fastify.register(instructorProfileRoutes);
-//fastify.register(lessonRoutes);
-//fastify.register(orderRoutes);
-//fastify.register(progressRoutes);
-//fastify.register(reviewRoutes);
+fastify.register(lessonRoutes);
+fastify.register(orderRoutes);
+fastify.register(progressRoutes);
+fastify.register(reviewRoutes);
 fastify.register(userRoutes);
 
 const startServer = async () => {
@@ -53,8 +50,6 @@ const startServer = async () => {
     const port = process.env.PORT || 3000;
     await fastify.listen({ port });
     console.log(`Server is running on port ${port}`);
-    //createInstructor();
-    await createCourseWithLessonsFromPlaylist();
   } catch (err) {
     fastify.log.error(err);
     process.exit(1);

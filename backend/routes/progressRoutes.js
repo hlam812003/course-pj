@@ -2,14 +2,19 @@ import { progressController } from "../controllers/progressController.js";
 import { middlewaresController } from "../middlewares/middlewaresController.js";
 
 async function progressRoutes(fastify, options) {
-  fastify.get("/progress/:courseId", {
+  fastify.get("/progress/course/:courseId", {
     preHandler: middlewaresController.verifyUserToken,
-    handler: progressController.getSelfProgress,
+    handler: progressController.getProgressByUserAndCourse,
   });
 
-  fastify.put("/progress/:courseId", {
+  fastify.put("/progress/course/:courseId", {
     preHandler: middlewaresController.verifyUserToken,
-    handler: progressController.updateSelfProgress,
+    handler: progressController.updateProgress,
+  });
+
+  fastify.get("/progress/user/:userId", {
+    preHandler: middlewaresController.verifyUserToken,
+    handler: progressController.getAllProgressByUser,
   });
 }
 
