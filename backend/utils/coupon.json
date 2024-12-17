@@ -1,0 +1,120 @@
+{
+    "info": {
+      "name": "Coupon API Tests",
+      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+      {
+        "name": "Create Coupon",
+        "request": {
+          "method": "POST",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"code\": \"DISCOUNT10\",\n  \"discountPercentage\": 10,\n  \"course\": \"63f4c882b5e7c8f1c8d2234b\",\n  \"expirationDate\": \"2024-12-31T23:59:59Z\"\n}"
+          },
+          "url": {
+            "raw": "http://localhost:3000/api/coupons",
+            "protocol": "http",
+            "host": ["localhost"],
+            "port": "3000",
+            "path": ["api", "coupons"]
+          }
+        },
+        "response": []
+      },
+      {
+        "name": "Get Coupon by ID",
+        "request": {
+          "method": "GET",
+          "header": [],
+          "url": {
+            "raw": "http://localhost:3000/api/coupons/:id",
+            "protocol": "http",
+            "host": ["localhost"],
+            "port": "3000",
+            "path": ["api", "coupons", ":id"],
+            "variable": [
+              {
+                "key": "id",
+                "value": "63f4c882b5e7c8f1c8d2234b"
+              }
+            ]
+          }
+        },
+        "response": []
+      },
+      {
+        "name": "Get All Coupons",
+        "request": {
+          "method": "GET",
+          "header": [],
+          "url": {
+            "raw": "http://localhost:3000/api/coupons",
+            "protocol": "http",
+            "host": ["localhost"],
+            "port": "3000",
+            "path": ["api", "coupons"]
+          }
+        },
+        "response": []
+      },
+      {
+        "name": "Update Coupon by ID",
+        "request": {
+          "method": "PUT",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"code\": \"DISCOUNT20\",\n  \"discountPercentage\": 20,\n  \"course\": \"63f4c882b5e7c8f1c8d2234b\",\n  \"expirationDate\": \"2025-01-31T23:59:59Z\"\n}"
+          },
+          "url": {
+            "raw": "http://localhost:3000/api/coupons/:id",
+            "protocol": "http",
+            "host": ["localhost"],
+            "port": "3000",
+            "path": ["api", "coupons", ":id"],
+            "variable": [
+              {
+                "key": "id",
+                "value": "63f4c882b5e7c8f1c8d2234b"
+              }
+            ]
+          }
+        },
+        "response": []
+      },
+      {
+        "name": "Delete Coupon by ID",
+        "request": {
+          "method": "DELETE",
+          "header": [],
+          "url": {
+            "raw": "http://localhost:3000/api/coupons/:id",
+            "protocol": "http",
+            "host": ["localhost"],
+            "port": "3000",
+            "path": ["api", "coupons", ":id"],
+            "variable": [
+              {
+                "key": "id",
+                "value": "63f4c882b5e7c8f1c8d2234b"
+              }
+            ]
+          }
+        },
+        "response": []
+      }
+    ]
+  }
+  

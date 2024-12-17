@@ -4,7 +4,9 @@ import { middlewaresController } from "../middlewares/middlewaresController.js";
 async function courseRoutes(fastify, options) {
   fastify.get("/courses", { handler: courseController.getAllCourses });
   fastify.get("/courses/:id", { handler: courseController.getCourseById });
-
+  fastify.get("/courses/category/:categoryId", {
+    handler: courseController.getCoursesByCategory,
+  });
   fastify.post("/courses", {
     preHandler: middlewaresController.verifyInstructorToken,
     handler: courseController.createCourse,

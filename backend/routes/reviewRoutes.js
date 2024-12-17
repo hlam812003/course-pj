@@ -9,7 +9,7 @@ async function reviewRoutes(fastify, options) {
     preHandler: middlewaresController.verifyUserToken,
     handler: reviewController.getReviewById,
   });
-  fastify.post("/reviews/course/:courseId", {
+  fastify.post("/reviews/course", {
     preHandler: middlewaresController.verifyUserToken,
     handler: reviewController.createReview,
   });

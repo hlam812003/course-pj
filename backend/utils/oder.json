@@ -1,0 +1,153 @@
+{
+    "info": {
+      "name": "Order API Test",
+      "description": "Test API endpoints for creating, retrieving, updating, and deleting orders with token verification.",
+      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+      {
+        "name": "Create Order",
+        "request": {
+          "method": "POST",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "Authorization",
+              "value": "Bearer USER_ACCESS_TOKEN"
+            }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\"user\": \"USER_ID\", \"courses\": [\"COURSE_ID_1\", \"COURSE_ID_2\"], \"totalAmount\": 1000}"
+          },
+          "url": {
+            "raw": "http://localhost:3000/orders/user/USER_ID",
+            "protocol": "http",
+            "host": [
+              "localhost"
+            ],
+            "port": "3000",
+            "path": [
+              "orders",
+              "user",
+              "USER_ID"
+            ]
+          }
+        },
+        "response": []
+      },
+      {
+        "name": "Get Order By ID",
+        "request": {
+          "method": "GET",
+          "header": [
+            {
+              "key": "Authorization",
+              "value": "Bearer USER_ACCESS_TOKEN"
+            }
+          ],
+          "url": {
+            "raw": "http://localhost:3000/orders/ORDER_ID",
+            "protocol": "http",
+            "host": [
+              "localhost"
+            ],
+            "port": "3000",
+            "path": [
+              "orders",
+              "ORDER_ID"
+            ]
+          }
+        },
+        "response": []
+      },
+      {
+        "name": "Get Orders By User ID",
+        "request": {
+          "method": "GET",
+          "header": [
+            {
+              "key": "Authorization",
+              "value": "Bearer USER_ACCESS_TOKEN"
+            }
+          ],
+          "url": {
+            "raw": "http://localhost:3000/orders/user/USER_ID",
+            "protocol": "http",
+            "host": [
+              "localhost"
+            ],
+            "port": "3000",
+            "path": [
+              "orders",
+              "user",
+              "USER_ID"
+            ]
+          }
+        },
+        "response": []
+      },
+      {
+        "name": "Update Payment Status",
+        "request": {
+          "method": "PUT",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "Authorization",
+              "value": "Bearer ADMIN_ACCESS_TOKEN"
+            }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\"paymentStatus\": \"Completed\"}"
+          },
+          "url": {
+            "raw": "http://localhost:3000/orders/ORDER_ID",
+            "protocol": "http",
+            "host": [
+              "localhost"
+            ],
+            "port": "3000",
+            "path": [
+              "orders",
+              "ORDER_ID"
+            ]
+          }
+        },
+        "response": []
+      },
+      {
+        "name": "Delete Order By ID",
+        "request": {
+          "method": "DELETE",
+          "header": [
+            {
+              "key": "Authorization",
+              "value": "Bearer USER_ACCESS_TOKEN"
+            }
+          ],
+          "url": {
+            "raw": "http://localhost:3000/orders/ORDER_ID",
+            "protocol": "http",
+            "host": [
+              "localhost"
+            ],
+            "port": "3000",
+            "path": [
+              "orders",
+              "ORDER_ID"
+            ]
+          }
+        },
+        "response": []
+      }
+    ]
+  }
+  

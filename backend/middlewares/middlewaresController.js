@@ -24,7 +24,8 @@ export const middlewaresController = {
   verifyAdminToken: async (request, reply, next) => {
     try {
       await middlewaresController.verifyToken(request, reply, async () => {
-        if (request.user.role !== "admin") {
+        console.log(request.user);
+        if (request.user.payload.role !== "admin") {
           return reply
             .status(403)
             .send({ message: "Access forbidden: Admins only" });
@@ -44,8 +45,8 @@ export const middlewaresController = {
     try {
       await middlewaresController.verifyToken(request, reply, async () => {
         if (
-          request.user.role !== "instructor" &&
-          request.user.role !== "admin"
+          request.user.payload.role !== "instructor" &&
+          request.user.payload.role !== "admin"
         ) {
           return reply
             .status(403)
@@ -67,9 +68,9 @@ export const middlewaresController = {
     try {
       await middlewaresController.verifyToken(request, reply, async () => {
         if (
-          request.user.role !== "student" &&
-          request.user.role !== "instructor" &&
-          request.user.role !== "admin"
+          request.user.payload.role !== "student" &&
+          request.user.payload.role !== "instructor" &&
+          request.user.payload.role !== "admin"
         ) {
           return reply.status(403).send({ message: "Access forbidden" });
         }

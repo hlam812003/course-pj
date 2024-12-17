@@ -3,7 +3,7 @@ import { middlewaresController } from "../middlewares/middlewaresController.js";
 
 async function profileRoutes(fastify, options) {
   fastify.post("/instructorProfiles", {
-    //preHandler: middlewaresController.verifyInstructorToken,
+    preHandler: middlewaresController.verifyInstructorToken,
     handler: instructorProfileController.createInstructorProfile,
   });
   fastify.get("/instructorProfile", {

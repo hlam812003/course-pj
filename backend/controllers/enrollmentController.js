@@ -90,24 +90,9 @@ export const enrollmentController = {
   // Cancel an enrollment (remove user from course)
   cancelEnrollment: async (request, reply) => {
     try {
-      const { userId, courseId } = request.params;
+      const { id } = request.params;
 
-      if (!mongoose.Types.ObjectId.isValid(userId)) {
-        return reply.status(400).send({ message: "Invalid user ID" });
-      }
-
-      if (!mongoose.Types.ObjectId.isValid(courseId)) {
-        return reply.status(400).send({ message: "Invalid course ID" });
-      }
-
-      const enrollment = await Enrollment.findOneAndDelete({
-        user: userId,
-        course: courseId,
-      });
-
-      if (!enrollment) {
-        return reply.status(404).send({ message: "Enrollment not found" });
-      }
+      await Enrollment.findByIdAndDelete(id);
 
       return reply
         .status(200)

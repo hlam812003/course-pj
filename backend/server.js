@@ -12,6 +12,7 @@ import orderRoutes from "./routes/orderRoutes.js";
 import progressRoutes from "./routes/progressRoutes.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+import axios from "axios";
 
 import * as fastifyJwt from "@fastify/jwt";
 
@@ -49,7 +50,6 @@ const startServer = async () => {
     await connectToDatabase();
     const port = process.env.PORT || 3000;
     await fastify.listen({ port });
-    console.log(`Server is running on port ${port}`);
   } catch (err) {
     fastify.log.error(err);
     process.exit(1);

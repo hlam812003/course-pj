@@ -70,15 +70,11 @@ export const categoryController = {
         return reply.status(400).send({ message: "Invalid category ID" });
       }
 
-      const updatedCategory = await Category.findByIdAndUpdate(
+      await Category.findByIdAndUpdate(
         id,
         { name, description },
         { new: true, runValidators: true }
       );
-
-      if (!updatedCategory) {
-        return reply.status(404).send({ message: "Category not found" });
-      }
 
       return reply.status(200).send({
         message: "Category updated successfully",
@@ -101,11 +97,7 @@ export const categoryController = {
         return reply.status(400).send({ message: "Invalid category ID" });
       }
 
-      const deletedCategory = await Category.findByIdAndDelete(id);
-
-      if (!deletedCategory) {
-        return reply.status(404).send({ message: "Category not found" });
-      }
+      await Category.findOneAndDelete({ _id: id });
 
       return reply
         .status(200)

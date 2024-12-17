@@ -1,0 +1,114 @@
+{
+    "info": {
+      "name": "Lesson API Tests",
+      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+      {
+        "name": "Get Lessons by Course ID",
+        "request": {
+          "method": "GET",
+          "header": [],
+          "url": {
+            "raw": "http://localhost:3000/lessons/course/:courseId?page=1&limit=10",
+            "host": ["localhost"],
+            "port": "3000",
+            "path": ["lessons", "course", ":courseId"],
+            "query": [
+              { "key": "page", "value": "1" },
+              { "key": "limit", "value": "10" }
+            ]
+          }
+        }
+      },
+      {
+        "name": "Get Lesson by ID",
+        "request": {
+          "method": "GET",
+          "header": [],
+          "url": {
+            "raw": "http://localhost:3000/lessons/:id",
+            "host": ["localhost"],
+            "port": "3000",
+            "path": ["lessons", ":id"]
+          }
+        }
+      },
+      {
+        "name": "Create Lesson",
+        "request": {
+          "method": "POST",
+          "header": [
+            {
+              "key": "Authorization",
+              "value": "Bearer <your_instructor_token>",
+              "type": "text"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json",
+              "type": "text"
+            }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"title\": \"Sample Lesson\",\n  \"content\": \"This is a sample lesson content.\",\n  \"course\": \"<course_id>\"\n}"
+          },
+          "url": {
+            "raw": "http://localhost:3000/lessons/course/:courseId",
+            "host": ["localhost"],
+            "port": "3000",
+            "path": ["lessons", "course", ":courseId"]
+          }
+        }
+      },
+      {
+        "name": "Update Lesson by ID",
+        "request": {
+          "method": "PUT",
+          "header": [
+            {
+              "key": "Authorization",
+              "value": "Bearer <your_instructor_token>",
+              "type": "text"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json",
+              "type": "text"
+            }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"title\": \"Updated Lesson Title\",\n  \"content\": \"Updated content for the lesson.\",\n  \"course\": \"<course_id>\"\n}"
+          },
+          "url": {
+            "raw": "http://localhost:3000/lessons/:id",
+            "host": ["localhost"],
+            "port": "3000",
+            "path": ["lessons", ":id"]
+          }
+        }
+      },
+      {
+        "name": "Delete Lesson by ID",
+        "request": {
+          "method": "DELETE",
+          "header": [
+            {
+              "key": "Authorization",
+              "value": "Bearer <your_admin_token>",
+              "type": "text"
+            }
+          ],
+          "url": {
+            "raw": "http://localhost:3000/lessons/:id",
+            "host": ["localhost"],
+            "port": "3000",
+            "path": ["lessons", ":id"]
+          }
+        }
+      }
+    ]
+  }
+  

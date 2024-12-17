@@ -12,7 +12,7 @@ async function enrollmentRoutes(fastify, options) {
     handler: enrollmentController.getEnrollmentsByUserId,
   });
 
-  fastify.post("/enrollments/course/:courseId", {
+  fastify.post("/enrollments", {
     preHandler: middlewaresController.verifyUserToken,
     handler: enrollmentController.enrollInCourse,
   });

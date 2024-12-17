@@ -1,0 +1,102 @@
+{
+    "info": {
+      "_postman_id": "f517b9b8-4f2d-42de-a6ac-9d00a6cbbfad",
+      "name": "Instructor Profile API",
+      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+      {
+        "name": "Create Instructor Profile",
+        "request": {
+          "method": "POST",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json",
+              "description": "Content type"
+            }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\"user\": \"userId\", \"bio\": \"This is a bio\", \"expertise\": \"Expert in Python\", \"profilePicture\": \"http://example.com/pic.jpg\", \"socialLinks\": {\"linkedin\": \"http://linkedin.com/in/example\", \"github\": \"http://github.com/example\"}}"
+          },
+          "url": {
+            "raw": "http://localhost:3000/instructorProfiles",
+            "protocol": "http",
+            "host": ["localhost"],
+            "port": "3000",
+            "path": ["instructorProfiles"]
+          }
+        },
+        "response": []
+      },
+      {
+        "name": "Get All Instructor Profiles",
+        "request": {
+          "method": "GET",
+          "url": {
+            "raw": "http://localhost:3000/instructorProfile",
+            "protocol": "http",
+            "host": ["localhost"],
+            "port": "3000",
+            "path": ["instructorProfile"]
+          }
+        },
+        "response": []
+      },
+      {
+        "name": "Get Instructor Profile By ID",
+        "request": {
+          "method": "GET",
+          "url": {
+            "raw": "http://localhost:3000/instructorProfile/:id",
+            "protocol": "http",
+            "host": ["localhost"],
+            "port": "3000",
+            "path": ["instructorProfile", ":id"]
+          }
+        },
+        "response": []
+      },
+      {
+        "name": "Update Instructor Profile",
+        "request": {
+          "method": "PUT",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json",
+              "description": "Content type"
+            }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\"bio\": \"Updated bio\", \"expertise\": \"Expert in JavaScript\", \"profilePicture\": \"http://example.com/updated-pic.jpg\", \"socialLinks\": {\"linkedin\": \"http://linkedin.com/in/updated\", \"github\": \"http://github.com/updated\"}}"
+          },
+          "url": {
+            "raw": "http://localhost:3000/instructorProfile",
+            "protocol": "http",
+            "host": ["localhost"],
+            "port": "3000",
+            "path": ["instructorProfile"]
+          }
+        },
+        "response": []
+      },
+      {
+        "name": "Delete Instructor Profile By ID",
+        "request": {
+          "method": "DELETE",
+          "url": {
+            "raw": "http://localhost:3000/instructorProfile/:id",
+            "protocol": "http",
+            "host": ["localhost"],
+            "port": "3000",
+            "path": ["instructorProfile", ":id"]
+          }
+        },
+        "response": []
+      }
+    ]
+  }
+  

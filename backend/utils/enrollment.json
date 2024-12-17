@@ -1,0 +1,74 @@
+{
+    "info": {
+      "name": "Enrollment API",
+      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+      {
+        "name": "Enroll in Course",
+        "request": {
+          "method": "POST",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"user\": \"64e14e2f4f1f2c001c5e4a89\",\n  \"course\": \"64e14e5a4f1f2c001c5e4a8a\"\n}"
+          },
+          "url": {
+            "raw": "http://localhost:3000/enrollments",
+            "protocol": "http",
+            "host": ["localhost"],
+            "port": "3000",
+            "path": ["enrollments"]
+          }
+        }
+      },
+      {
+        "name": "Get Enrollments by User ID",
+        "request": {
+          "method": "GET",
+          "header": [],
+          "url": {
+            "raw": "http://localhost:3000/enrollments/user/64e14e2f4f1f2c001c5e4a89",
+            "protocol": "http",
+            "host": ["localhost"],
+            "port": "3000",
+            "path": ["enrollments", "user", "64e14e2f4f1f2c001c5e4a89"]
+          }
+        }
+      },
+      {
+        "name": "Get Enrollments by Course ID",
+        "request": {
+          "method": "GET",
+          "header": [],
+          "url": {
+            "raw": "http://localhost:3000/enrollments/course/64e14e5a4f1f2c001c5e4a8a",
+            "protocol": "http",
+            "host": ["localhost"],
+            "port": "3000",
+            "path": ["enrollments", "course", "64e14e5a4f1f2c001c5e4a8a"]
+          }
+        }
+      },
+      {
+        "name": "Cancel Enrollment",
+        "request": {
+          "method": "DELETE",
+          "header": [],
+          "url": {
+            "raw": "http://localhost:3000/enrollments/user/64e14e2f4f1f2c001c5e4a89/course/64e14e5a4f1f2c001c5e4a8a",
+            "protocol": "http",
+            "host": ["localhost"],
+            "port": "3000",
+            "path": ["enrollments", "user", "64e14e2f4f1f2c001c5e4a8a", "course", "64e14e5a4f1f2c001c5e4a8a"]
+          }
+        }
+      }
+    ]
+  }
+  

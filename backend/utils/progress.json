@@ -1,0 +1,130 @@
+{
+    "info": {
+      "name": "Progress API Test",
+      "description": "Test API endpoints for initializing, updating, and retrieving progress for courses.",
+      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+      {
+        "name": "Initialize Progress",
+        "request": {
+          "method": "POST",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "Authorization",
+              "value": "Bearer USER_ACCESS_TOKEN"
+            }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\"user\": \"USER_ID\", \"course\": \"COURSE_ID\"}"
+          },
+          "url": {
+            "raw": "http://localhost:3000/progress/course/COURSE_ID",
+            "protocol": "http",
+            "host": [
+              "localhost"
+            ],
+            "port": "3000",
+            "path": [
+              "progress",
+              "course",
+              "COURSE_ID"
+            ]
+          }
+        },
+        "response": []
+      },
+      {
+        "name": "Update Progress",
+        "request": {
+          "method": "PUT",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "Authorization",
+              "value": "Bearer USER_ACCESS_TOKEN"
+            }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\"user\": \"USER_ID\", \"course\": \"COURSE_ID\", \"lessonId\": \"LESSON_ID\"}"
+          },
+          "url": {
+            "raw": "http://localhost:3000/progress/course/COURSE_ID",
+            "protocol": "http",
+            "host": [
+              "localhost"
+            ],
+            "port": "3000",
+            "path": [
+              "progress",
+              "course",
+              "COURSE_ID"
+            ]
+          }
+        },
+        "response": []
+      },
+      {
+        "name": "Get Progress by User and Course",
+        "request": {
+          "method": "GET",
+          "header": [
+            {
+              "key": "Authorization",
+              "value": "Bearer USER_ACCESS_TOKEN"
+            }
+          ],
+          "url": {
+            "raw": "http://localhost:3000/progress/course/COURSE_ID",
+            "protocol": "http",
+            "host": [
+              "localhost"
+            ],
+            "port": "3000",
+            "path": [
+              "progress",
+              "course",
+              "COURSE_ID"
+            ]
+          }
+        },
+        "response": []
+      },
+      {
+        "name": "Get All Progress by User",
+        "request": {
+          "method": "GET",
+          "header": [
+            {
+              "key": "Authorization",
+              "value": "Bearer USER_ACCESS_TOKEN"
+            }
+          ],
+          "url": {
+            "raw": "http://localhost:3000/progress/user/USER_ID",
+            "protocol": "http",
+            "host": [
+              "localhost"
+            ],
+            "port": "3000",
+            "path": [
+              "progress",
+              "user",
+              "USER_ID"
+            ]
+          }
+        },
+        "response": []
+      }
+    ]
+  }
+  

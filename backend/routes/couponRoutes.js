@@ -5,7 +5,6 @@ async function couponRoutes(fastify, options) {
   fastify.get("/coupons/:id", { handler: couponController.getCouponById });
 
   fastify.get("/coupons", {
-    preHandler: middlewaresController.verifyAdminToken,
     handler: couponController.getAllCoupons,
   });
 

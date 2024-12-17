@@ -1,0 +1,115 @@
+{
+    "info": {
+      "name": "Course API",
+      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+      {
+        "name": "Create Course",
+        "request": {
+          "method": "POST",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"title\": \"Sample Course\",\n  \"description\": \"This is a sample course description.\",\n  \"price\": 49.99,\n  \"instructor\": \"64e14e2f4f1f2c001c5e4a89\",\n  \"category\": \"64e14e5a4f1f2c001c5e4a8a\",\n  \"level\": \"Beginner\",\n  \"status\": \"Published\",\n  \"thumbnail\": \"thumbnail_url\",\n  \"lessons\": [\"64e14e9e4f1f2c001c5e4a8b\"],\n  \"reviews\": []\n}"
+          },
+          "url": {
+            "raw": "http://localhost:3000/courses",
+            "protocol": "http",
+            "host": ["localhost"],
+            "port": "3000",
+            "path": ["courses"]
+          }
+        }
+      },
+      {
+        "name": "Get Course By ID",
+        "request": {
+          "method": "GET",
+          "header": [],
+          "url": {
+            "raw": "http://localhost:3000/courses/{{courseId}}",
+            "protocol": "http",
+            "host": ["localhost"],
+            "port": "3000",
+            "path": ["courses", "{{courseId}}"],
+            "variable": [
+              {
+                "key": "courseId",
+                "value": "64e14e9e4f1f2c001c5e4a8b"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "name": "Get All Courses",
+        "request": {
+          "method": "GET",
+          "header": [],
+          "url": {
+            "raw": "http://localhost:3000/courses",
+            "protocol": "http",
+            "host": ["localhost"],
+            "port": "3000",
+            "path": ["courses"]
+          }
+        }
+      },
+      {
+        "name": "Update Course By ID",
+        "request": {
+          "method": "PUT",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"title\": \"Updated Course\",\n  \"description\": \"This is an updated course description.\",\n  \"price\": 59.99,\n  \"instructor\": \"64e14e2f4f1f2c001c5e4a89\",\n  \"category\": \"64e14e5a4f1f2c001c5e4a8a\",\n  \"level\": \"Intermediate\",\n  \"status\": \"Published\",\n  \"thumbnail\": \"updated_thumbnail_url\",\n  \"lessons\": [\"64e14e9e4f1f2c001c5e4a8b\"],\n  \"reviews\": []\n}"
+          },
+          "url": {
+            "raw": "http://localhost:3000/courses/{{courseId}}",
+            "protocol": "http",
+            "host": ["localhost"],
+            "port": "3000",
+            "path": ["courses", "{{courseId}}"],
+            "variable": [
+              {
+                "key": "courseId",
+                "value": "64e14e9e4f1f2c001c5e4a8b"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "name": "Delete Course By ID",
+        "request": {
+          "method": "DELETE",
+          "header": [],
+          "url": {
+            "raw": "http://localhost:3000/courses/{{courseId}}",
+            "protocol": "http",
+            "host": ["localhost"],
+            "port": "3000",
+            "path": ["courses", "{{courseId}}"],
+            "variable": [
+              {
+                "key": "courseId",
+                "value": "64e14e9e4f1f2c001c5e4a8b"
+              }
+            ]
+          }
+        }
+      }
+    ]
+  }
+  

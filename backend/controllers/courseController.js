@@ -47,16 +47,11 @@ export const courseController = {
 
   // Get a course by ID
   getCourseById: async (request, reply) => {
+    console.log(request.params);
     try {
       const { id } = request.params;
 
-      if (!mongoose.Types.ObjectId.isValid(id)) {
-        return reply.status(400).send({ message: "Invalid course ID" });
-      }
-
-      const course = await Course.findById(id).populate(
-        "instructor category lessons reviews"
-      );
+      const course = await Course.findById(id);
 
       if (!course) {
         return reply.status(404).send({ message: "Course not found" });
@@ -74,9 +69,29 @@ export const courseController = {
   // Get all courses
   getAllCourses: async (request, reply) => {
     try {
-      const courses = await Course.find().populate("instructor category");
+      // Lấy query parameters từ request
+      const page = parseInt(request.query.page) || 1; // Mặc định là trang 1
+      const limit = parseInt(request.query.limit) || 10; // Số lượng courses mỗi trang, mặc định là 10
 
-      return reply.status(200).send(courses);
+      // Tính toán số lượng cần bỏ qua
+      const skip = (page - 1) * limit;
+
+      // Tìm courses với phân trang
+      const courses = await Course.find()
+        .populate("instructor category")
+        .skip(skip)
+        .limit(limit);
+
+      // Tổng số courses
+      const totalCourses = await Course.countDocuments();
+
+      // Trả về kết quả
+      return reply.status(200).send({
+        currentPage: page,
+        totalPages: Math.ceil(totalCourses / limit),
+        totalCourses,
+        courses,
+      });
     } catch (error) {
       console.error("Error fetching courses:", error);
       return reply
@@ -161,6 +176,42 @@ export const courseController = {
       return reply
         .status(500)
         .send({ message: "Error deleting course", error: error.message });
+    }
+  },
+  getCoursesByCategory: async (request, reply) => {
+    try {
+      // Lấy categoryId từ request parameters
+      const { categoryId } = request.params;
+
+      // Lấy query parameters để hỗ trợ phân trang
+      const page = parseInt(request.query.page) || 1; // Mặc định là trang 1
+      const limit = parseInt(request.query.limit) || 10; // Số lượng courses mỗi trang, mặc định là 10
+      const skip = (page - 1) * limit;
+
+      // Tìm các khóa học theo categoryId
+      const courses = await Course.find({ category: categoryId })
+        .populate("instructor category") // Populate dữ liệu liên quan
+        .skip(skip)
+        .limit(limit);
+
+      // Đếm tổng số courses trong category này
+      const totalCourses = await Course.countDocuments({
+        category: categoryId,
+      });
+
+      // Trả về kết quả
+      return reply.status(200).send({
+        currentPage: page,
+        totalPages: Math.ceil(totalCourses / limit),
+        totalCourses,
+        courses,
+      });
+    } catch (error) {
+      console.error("Error fetching courses by category:", error);
+      return reply.status(500).send({
+        message: "Error fetching courses by category",
+        error: error.message,
+      });
     }
   },
 };

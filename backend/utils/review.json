@@ -1,0 +1,108 @@
+{
+    "info": {
+      "name": "Review Routes",
+      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+      {
+        "name": "Get Reviews by Course ID",
+        "request": {
+          "method": "GET",
+          "header": [],
+          "url": {
+            "raw": "{{base_url}}/reviews/course/:courseId",
+            "host": ["{{base_url}}"],
+            "path": ["reviews", "course", ":courseId"],
+            "variable": [
+              {
+                "key": "courseId",
+                "value": "exampleCourseId"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "name": "Get Review by ID",
+        "request": {
+          "method": "GET",
+          "header": [
+            {
+              "key": "Authorization",
+              "value": "Bearer {{token}}",
+              "type": "text"
+            }
+          ],
+          "url": {
+            "raw": "{{base_url}}/reviews/:id",
+            "host": ["{{base_url}}"],
+            "path": ["reviews", ":id"],
+            "variable": [
+              {
+                "key": "id",
+                "value": "exampleReviewId"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "name": "Create Review",
+        "request": {
+          "method": "POST",
+          "header": [
+            {
+              "key": "Authorization",
+              "value": "Bearer {{token}}",
+              "type": "text"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json",
+              "type": "text"
+            }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"user\": \"exampleUserId\",\n  \"course\": \"exampleCourseId\",\n  \"rating\": 5,\n  \"comment\": \"Great course!\"\n}"
+          },
+          "url": {
+            "raw": "{{base_url}}/reviews/course/:courseId",
+            "host": ["{{base_url}}"],
+            "path": ["reviews", "course", ":courseId"],
+            "variable": [
+              {
+                "key": "courseId",
+                "value": "exampleCourseId"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "name": "Delete Review by ID",
+        "request": {
+          "method": "DELETE",
+          "header": [
+            {
+              "key": "Authorization",
+              "value": "Bearer {{token}}",
+              "type": "text"
+            }
+          ],
+          "url": {
+            "raw": "{{base_url}}/reviews/:id",
+            "host": ["{{base_url}}"],
+            "path": ["reviews", ":id"],
+            "variable": [
+              {
+                "key": "id",
+                "value": "exampleReviewId"
+              }
+            ]
+          }
+        }
+      }
+    ]
+  }
+  
