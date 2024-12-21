@@ -2,7 +2,7 @@ import { shoppingCartController } from "../controllers/shoppingCartController.js
 import { middlewaresController } from "../middlewares/middlewaresController.js";
 
 async function shoppingCartRoutes(fastify, options) {
-  fastify.get("/shoppingCart", {
+  fastify.get("/shoppingCart/user/:userId", {
     preHandler: middlewaresController.verifyUserToken,
     handler: shoppingCartController.getCartByUserId,
   });
