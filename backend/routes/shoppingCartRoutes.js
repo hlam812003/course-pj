@@ -6,6 +6,10 @@ async function shoppingCartRoutes(fastify, options) {
     preHandler: middlewaresController.verifyUserToken,
     handler: shoppingCartController.getCartByUserId,
   });
+  fastify.post("/shoppingCart/cousre/:courseId", {
+    preHandler: middlewaresController.verifyUserToken,
+    handler: shoppingCartController.addCourseToCart,
+  });
 
   fastify.put("/shoppingCart", {
     preHandler: middlewaresController.verifyUserToken,

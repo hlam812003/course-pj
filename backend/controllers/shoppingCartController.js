@@ -5,7 +5,7 @@ export const shoppingCartController = {
   addCourseToCart: async (request, reply) => {
     try {
       const { courseId } = request.params; // Chỉ nhận courseId từ params
-      const userId = request.user.id; // Lấy userId từ request.user (JWT middleware)
+      const userId = request.user.payload.id; // Lấy userId từ request.user (JWT middleware)
 
       if (!mongoose.Types.ObjectId.isValid(userId)) {
         return reply.status(400).send({ message: "Invalid user ID" });
