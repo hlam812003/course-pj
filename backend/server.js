@@ -17,6 +17,7 @@ import axios from "axios";
 import * as fastifyJwt from "@fastify/jwt";
 
 import fastifyCookie from "@fastify/cookie";
+import fastifyCors from "@fastify/cors";
 import couponRoutes from "./routes/couponRoutes.js";
 
 dotenv.config();
@@ -30,6 +31,13 @@ fastify.register(fastifyJwt, {
 });
 fastify.register(fastifyCookie, {
   secret: "my-secret", // for cookies signature
+});
+
+fastify.register(fastifyCors, {
+  origin: "http://localhost:3000",
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Accept", "Authorization"],
 });
 
 fastify.register(athRoutes);
