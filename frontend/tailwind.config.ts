@@ -8,8 +8,8 @@ const config: Config = {
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
-    "./node_modules/@nextui-org/theme/dist/components/(button|ripple|spinner).js"
-  ],
+    "./node_modules/@nextui-org/theme/dist/components/(accordion|alert|autocomplete|avatar|badge|breadcrumbs|button|calendar|card|checkbox|chip|code|divider|drawer|dropdown|form|image|input|input-otp|kbd|link|listbox|menu|modal|navbar|pagination|popover|progress|ripple|scroll-shadow|select|skeleton|slider|snippet|spacer|spinner|toggle|table|tabs|user).js",
+],
   theme: {
   	extend: {
 			fontFamily: {

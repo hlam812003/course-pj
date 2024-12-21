@@ -1,6 +1,7 @@
 import { Button, Card, CardBody, CardFooter, CardHeader, Chip } from "@nextui-org/react";
 import { Icon } from "@iconify/react";
 import Image from "next/image";
+import Link from "next/link";
 
 const featuredCourses = [
   {
@@ -124,13 +125,15 @@ export default function Home() {
               Get Started
               <Icon icon="ph:arrow-right" className="ml-2 text-xl" />
             </Button>
-            <Button 
-              size="lg" 
-              variant="bordered" 
-              className="border-2 border-black text-black font-semibold text-lg h-14 px-10 hover:bg-black hover:text-white transition-colors"
-            >
-              Browse Courses
-            </Button>
+            <Link href="/courses">
+              <Button 
+                size="lg" 
+                variant="bordered" 
+                className="border-2 border-black text-black font-semibold text-lg h-14 px-10 hover:bg-black hover:text-white transition-colors"
+              >
+                Browse Courses
+              </Button>
+            </Link>
           </div>
         </div>
         <div className="relative w-[60rem] h-[40rem] animate-fade-in">
@@ -240,14 +243,16 @@ export default function Home() {
           ))}
         </div>
         <div className="text-center mt-20">
-          <Button 
-            size="lg" 
-            variant="bordered" 
-            className="border-2 border-black text-black font-semibold text-lg h-14 px-10 hover:bg-black hover:text-white transition-colors"
-          >
-            View All Courses
-            <Icon icon="ph:arrow-right" className="ml-2 text-xl" />
-          </Button>
+          <Link href="/courses">
+            <Button 
+              size="lg" 
+              variant="bordered" 
+              className="border-2 border-black text-black font-semibold text-lg h-14 px-10 hover:bg-black hover:text-white transition-colors"
+            >
+              View All Courses
+              <Icon icon="ph:arrow-right" className="ml-2 text-xl" />
+            </Button>
+          </Link>
         </div>
       </section>
 
