@@ -13,6 +13,7 @@ import progressRoutes from "./routes/progressRoutes.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import axios from "axios";
+import { updateCourses } from "./models/udateCousre.js";
 
 import * as fastifyJwt from "@fastify/jwt";
 

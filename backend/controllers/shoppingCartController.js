@@ -2,6 +2,76 @@ import { shoppingCart } from "../models/shoppingCart.js";
 import mongoose from "mongoose";
 
 export const shoppingCartController = {
+  addCourseToCart: async (request, reply) => {
+    try {
+      const { courseId } = request.params; // Chỉ nhận courseId từ params
+      const userId = request.user.id; // Lấy userId từ request.user (JWT middleware)
+
+      if (!mongoose.Types.ObjectId.isValid(userId)) {
+        return reply.status(400).send({ message: "Invalid user ID" });
+      }
+
+      if (!mongoose.Types.ObjectId.isValid(courseId)) {
+        return reply.status(400).send({ message: "Invalid course ID" });
+      }
+
+      const courseDetails = await Course.findById(courseId);
+      if (!courseDetails) {
+        return reply.status(404).send({ message: "Course not found" });
+      }
+
+      // Tìm giỏ hàng của người dùng
+      let cart = await shoppingCart.findOne({ user: userId });
+
+      if (cart) {
+        // Kiểm tra khóa học đã tồn tại chưa
+        const existingCourse = cart.courses.find((item) =>
+          item.course.equals(courseId)
+        );
+
+        if (existingCourse) {
+          existingCourse.quantity += 1; // Tăng số lượng
+        } else {
+          cart.courses.push({ course: courseId, quantity: 1 }); // Thêm khóa học mới
+        }
+
+        // Tính lại tổng tiền
+        let totalAmount = 0;
+        for (const { course, quantity } of cart.courses) {
+          const courseInfo = await Course.findById(course);
+          totalAmount += courseInfo.price * quantity;
+        }
+        cart.totalAmount = totalAmount;
+        cart.updatedAt = Date.now();
+
+        await cart.save();
+        return reply.status(200).send({
+          message: "Course added to cart successfully",
+          cart,
+        });
+      } else {
+        // Tạo giỏ hàng mới nếu chưa tồn tại
+        cart = new shoppingCart({
+          user: userId,
+          courses: [{ course: courseId, quantity: 1 }],
+          totalAmount: courseDetails.price,
+        });
+
+        await cart.save();
+        return reply.status(201).send({
+          message: "New cart created with the course",
+          cart,
+        });
+      }
+    } catch (error) {
+      console.error("Error adding course to cart:", error);
+      return reply.status(500).send({
+        message: "Error adding course to cart",
+        error: error.message,
+      });
+    }
+  },
+
   // Create a new shopping cart or update an existing one
   createOrUpdateCart: async (request, reply) => {
     try {
@@ -59,12 +129,10 @@ export const shoppingCartController = {
       }
     } catch (error) {
       console.error("Error creating/updating cart:", error);
-      return reply
-        .status(500)
-        .send({
-          message: "Error creating/updating cart",
-          error: error.message,
-        });
+      return reply.status(500).send({
+        message: "Error creating/updating cart",
+        error: error.message,
+      });
     }
   },
 
@@ -135,12 +203,10 @@ export const shoppingCartController = {
         .send({ message: "Course removed from cart", cart });
     } catch (error) {
       console.error("Error removing course from cart:", error);
-      return reply
-        .status(500)
-        .send({
-          message: "Error removing course from cart",
-          error: error.message,
-        });
+      return reply.status(500).send({
+        message: "Error removing course from cart",
+        error: error.message,
+      });
     }
   },
 
