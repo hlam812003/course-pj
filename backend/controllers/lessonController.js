@@ -61,12 +61,13 @@ export const lessonController = {
     try {
       const { courseId } = request.params;
       const { page = 1, limit = 30 } = request.query; // Default values for pagination
-      ///lessons/:courseId?page=2&limit=5
+
+      // Kiểm tra ID hợp lệ
       if (!mongoose.Types.ObjectId.isValid(courseId)) {
         return reply.status(400).send({ message: "Invalid course ID" });
       }
 
-      // Parse pagination parameters
+      // Phân tích tham số phân trang
       const pageNumber = parseInt(page, 10);
       const pageSize = parseInt(limit, 10);
 
@@ -81,18 +82,22 @@ export const lessonController = {
           .send({ message: "Invalid pagination parameters" });
       }
 
-      // Retrieve lessons with pagination
+      // Lấy danh sách bài học với phân trang, đảm bảo đầy đủ thông tin chi tiết
       const lessons = await Lesson.find({ course: courseId })
-        .populate("course")
+        .populate({
+          path: "course", // Populate thông tin khóa học
+          select: "title description price", // Chỉ chọn các trường cần thiết
+        })
         .skip((pageNumber - 1) * pageSize)
-        .limit(pageSize);
+        .limit(pageSize)
+        .lean(); // Sử dụng .lean() để trả về object thuần
 
-      // Get total count for pagination metadata
+      // Lấy tổng số lượng bài học cho metadata phân trang
       const totalLessons = await Lesson.countDocuments({ course: courseId });
       const totalPages = Math.ceil(totalLessons / pageSize);
 
       return reply.status(200).send({
-        lessons,
+        lessons, // Danh sách bài học với thông tin chi tiết
         pagination: {
           totalLessons,
           totalPages,
