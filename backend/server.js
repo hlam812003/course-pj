@@ -13,7 +13,7 @@ import progressRoutes from "./routes/progressRoutes.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import axios from "axios";
-import { updateCourses } from "./models/udateCousre.js";
+import updateLessonLengths from "./utils/createLength.js";
 
 import * as fastifyJwt from "@fastify/jwt";
 
@@ -57,7 +57,7 @@ fastify.register(userRoutes);
 const startServer = async () => {
   try {
     await connectToDatabase();
-    const port = process.env.PORT || 3000;
+    const port = process.env.PORT || 3001;
     await fastify.listen({ port });
   } catch (err) {
     fastify.log.error(err);

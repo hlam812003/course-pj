@@ -1,4 +1,5 @@
 import { shoppingCart } from "../models/shoppingCart.js";
+import { Course } from "../models/course.js";
 import mongoose from "mongoose";
 
 export const shoppingCartController = {
