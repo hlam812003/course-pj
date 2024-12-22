@@ -21,8 +21,8 @@ export default function NotFound() {
         </div>
 
         <p className="text-xl text-gray-600 mt-8 mb-12 max-w-lg mx-auto">
-          Oops! The page you're looking for seems to have taken a different path. 
-          Let's get you back on track.
+          Oops! The page you&apos;re looking for seems to have taken a different path. 
+          Let&apos;s get you back on track.
         </p>
 
         <div className="flex flex-wrap gap-4 justify-center">

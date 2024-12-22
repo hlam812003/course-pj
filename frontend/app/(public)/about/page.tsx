@@ -25,7 +25,7 @@ export default function AboutPage() {
             </span>
           </h1>
           <p className="text-2xl text-gray-200 mb-12 max-w-3xl mx-auto leading-relaxed">
-            We're on a mission to democratize technology education and empower the next generation of innovators.
+            We&apos;re on a mission to democratize technology education and empower the next generation of innovators.
           </p>
           <Button 
             as={Link}
@@ -88,7 +88,7 @@ export default function AboutPage() {
                   covers everything from foundational programming to cutting-edge technologies.
                 </p>
                 <p>
-                  Today, we're proud to have helped thousands of students launch successful careers 
+                  Today, we&apos;re proud to have helped thousands of students launch successful careers 
                   in tech. But this is just the beginning of our journey to democratize education 
                   and empower the next generation of tech leaders.
                 </p>

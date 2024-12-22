@@ -12,6 +12,7 @@ import { getThumbnailUrl } from "@/lib/utils";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/auth.context";
 import { useRouter } from "next/navigation";
+import { enrollmentService } from "@/services/enrollment.service";
 
 function formatDate(dateString: string) {
   return new Date(dateString).toLocaleDateString('en-US', {
@@ -41,7 +42,7 @@ function getRatingDistribution(reviews: Review[]): RatingDistribution {
   return distribution;
 }
 
-export default function CourseDetailPage({ params }: { params: { id: string } }) {
+export default function CourseDetailPage({ params }: { params: { courseId: string } }) {
   const [course, setCourse] = useState<Course | null>(null);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -49,6 +50,8 @@ export default function CourseDetailPage({ params }: { params: { id: string } })
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [lessons, setLessons] = useState<LessonsResponse | null>(null);
   const [isEnrolling, setIsEnrolling] = useState(false);
+  const [isEnrolled, setIsEnrolled] = useState(false);
+  const [firstLesson, setFirstLesson] = useState<string | null>(null);
   const { user } = useAuth();
   const router = useRouter();
 
@@ -56,14 +59,19 @@ export default function CourseDetailPage({ params }: { params: { id: string } })
     const fetchData = async () => {
       try {
         setIsLoading(true);
-        const [courseData, reviewsData, lessonsData] = await Promise.all([
-          coursesService.getCourseById(params.id),
-          coursesService.getCourseReviews(params.id),
-          lessonsService.getLessonsByCourseId(params.id)
+        const [courseData, reviewsData, lessonsData, enrollmentStatus] = await Promise.all([
+          coursesService.getCourseById(params.courseId),
+          coursesService.getCourseReviews(params.courseId),
+          lessonsService.getLessonsByCourseId(params.courseId),
+          enrollmentService.checkEnrollmentStatus(params.courseId)
         ]);
         setCourse(courseData);
         setReviews(reviewsData);
         setLessons(lessonsData);
+        setIsEnrolled(enrollmentStatus);
+        if (lessonsData.lessons.length > 0) {
+          setFirstLesson(lessonsData.lessons[0]._id);
+        }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to fetch course');
       } finally {
@@ -72,7 +80,7 @@ export default function CourseDetailPage({ params }: { params: { id: string } })
     };
 
     fetchData();
-  }, [params.id]);
+  }, [params.courseId]);
 
   const handleAddToCart = async () => {
     if (!user) {
@@ -123,6 +131,39 @@ export default function CourseDetailPage({ params }: { params: { id: string } })
     }
   };
 
+  const renderActionButtons = () => {
+    if (isEnrolled && firstLesson) {
+      return (
+        <Button 
+          as={Link}
+          href={`/courses/${params.courseId}/lessons/${firstLesson}`}
+          className="w-full h-16 bg-black text-white font-semibold text-xl hover:opacity-90 transition-opacity"
+        >
+          Continue Learning
+        </Button>
+      );
+    }
+
+    return (
+      <>
+        <Button 
+          className="w-full bg-white text-black font-semibold h-14 text-xl border-2 border-black hover:bg-gray-100"
+          onPress={handleAddToCart}
+          isLoading={isAddingToCart}
+        >
+          Add to Cart
+        </Button>
+        <Button 
+          className="w-full h-16 bg-black text-white font-semibold text-xl hover:opacity-90 transition-opacity"
+          isLoading={isEnrolling}
+          onPress={handleEnrollAndCheckout}
+        >
+          {isEnrolling ? 'Processing...' : 'Enroll Now'}
+        </Button>
+      </>
+    );
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen w-full flex items-center justify-center pt-32">
@@ -153,7 +194,6 @@ export default function CourseDetailPage({ params }: { params: { id: string } })
     <main className="min-h-screen w-full pt-44 pb-16">
       <div className="w-full max-w-[1280px] mx-auto px-4 md:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Content */}
           <div className="lg:col-span-2">
             <div className="relative aspect-video w-full rounded-xl overflow-hidden mb-8">
               <Image
@@ -215,9 +255,9 @@ export default function CourseDetailPage({ params }: { params: { id: string } })
                       </div>
                     </div>
                     <div className="space-y-3">
-                      {course.lessons.map((lesson, index) => (
+                      {lessons?.lessons.map((lesson, index) => (
                         <div 
-                          key={lesson} 
+                          key={lesson._id} 
                           className="group relative bg-white rounded-lg p-5 flex items-center gap-4 hover:shadow-md transition-all cursor-pointer border border-transparent hover:border-gray-200"
                         >
                           <div className="flex items-center gap-4 flex-1">
@@ -226,28 +266,54 @@ export default function CourseDetailPage({ params }: { params: { id: string } })
                             </div>
                             <div className="flex-1">
                               <div className="flex items-center gap-2">
-                                <span className="text-xl font-medium">Lesson {index + 1}</span>
-                                <Icon 
-                                  icon="ph:lock-simple" 
-                                  className="text-2xl text-gray-400"
-                                />
+                                <span className="text-xl font-medium">{lesson.title}</span>
+                                {!isEnrolled && (
+                                  <Icon 
+                                    icon="ph:lock-simple" 
+                                    className="text-2xl text-gray-400"
+                                  />
+                                )}
                               </div>
-                              <p className="text-base text-gray-500 mt-1">
-                                Unlock this lesson by enrolling
-                              </p>
+                              {!isEnrolled ? (
+                                <p className="text-base text-gray-500 mt-1">
+                                  Unlock this lesson by enrolling
+                                </p>
+                              ) : (
+                                <Link 
+                                  href={`/courses/${params.courseId}/lessons/${lesson._id}`}
+                                  className="text-base text-blue-600 hover:underline mt-1"
+                                >
+                                  Watch lesson
+                                </Link>
+                              )}
                             </div>
                           </div>
                           <div className="flex items-center gap-3">
-                            <span className="text-lg text-gray-500">{lessons?.lessons[index].length}</span>
-                            <Button
-                              isIconOnly
-                              radius="full"
-                              variant="light"
-                              className="text-gray-400 group-hover:bg-gray-100 w-12 h-12"
-                              isDisabled
-                            >
-                              <Icon icon="ph:lock-simple" className="text-2xl" />
-                            </Button>
+                            <span className="text-lg text-gray-500">
+                              {lesson.length}
+                            </span>
+                            {isEnrolled ? (
+                              <Button
+                                as={Link}
+                                href={`/courses/${params.courseId}/lessons/${lesson._id}`}
+                                isIconOnly
+                                radius="full"
+                                variant="light"
+                                className="text-gray-600 group-hover:bg-gray-100 w-12 h-12"
+                              >
+                                <Icon icon="ph:play" className="text-2xl" />
+                              </Button>
+                            ) : (
+                              <Button
+                                isIconOnly
+                                radius="full"
+                                variant="light"
+                                className="text-gray-400 group-hover:bg-gray-100 w-12 h-12"
+                                isDisabled
+                              >
+                                <Icon icon="ph:lock-simple" className="text-2xl" />
+                              </Button>
+                            )}
                           </div>
                         </div>
                       ))}
@@ -301,7 +367,6 @@ export default function CourseDetailPage({ params }: { params: { id: string } })
                   </div>
                 </div>
 
-                {/* Reviews List */}
                 <div className="space-y-6">
                   {reviews.length > 0 ? (
                     reviews.map((review) => (
@@ -384,20 +449,7 @@ export default function CourseDetailPage({ params }: { params: { id: string } })
                   </div>
                 </div>
                 <div className="space-y-3">
-                  <Button 
-                    className="w-full bg-white text-black font-semibold h-14 text-xl border-2 border-black hover:bg-gray-100"
-                    onPress={handleAddToCart}
-                    isLoading={isAddingToCart}
-                  >
-                    Add to Cart
-                  </Button>
-                  <Button 
-                    className="w-full h-16 bg-black text-white font-semibold text-xl hover:opacity-90 transition-opacity"
-                    isLoading={isEnrolling}
-                    onPress={handleEnrollAndCheckout}
-                  >
-                    {isEnrolling ? 'Processing...' : 'Enroll Now'}
-                  </Button>
+                  {renderActionButtons()}
                 </div>
               </CardBody>
             </Card>

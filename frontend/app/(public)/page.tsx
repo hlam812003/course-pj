@@ -1,76 +1,12 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { Button, Card, CardBody, CardFooter, CardHeader, Chip } from "@nextui-org/react";
 import { Icon } from "@iconify/react";
 import Image from "next/image";
 import Link from "next/link";
-
-const featuredCourses = [
-  {
-    id: 1,
-    title: "Complete Web Development Bootcamp",
-    description: "Master HTML, CSS, JavaScript, React and Node.js with practical projects",
-    price: 99,
-    category: "Programming",
-    image: "/course-1.jpg",
-    rating: 4.9,
-    students: 15000,
-    icon: "logos:react"
-  },
-  {
-    id: 2,
-    title: "Data Science & Machine Learning",
-    description: "Learn Python, Data Analysis, Machine Learning and AI fundamentals",
-    price: 129,
-    category: "Data Science",
-    image: "/course-2.jpg",
-    rating: 4.8,
-    students: 12000,
-    icon: "logos:python"
-  },
-  {
-    id: 3,
-    title: "UI/UX Design Masterclass",
-    description: "Create beautiful user interfaces and enhance user experience",
-    price: 89,
-    category: "Design",
-    image: "/course-3.jpg",
-    rating: 4.7,
-    students: 8000,
-    icon: "solar:figma-linear"
-  },
-  {
-    id: 4,
-    title: "Mobile App Development with Flutter",
-    description: "Build cross-platform mobile apps for iOS and Android",
-    price: 109,
-    category: "Mobile Dev",
-    image: "/course-4.jpg",
-    rating: 4.9,
-    students: 10000,
-    icon: "logos:flutter"
-  },
-  {
-    id: 5,
-    title: "Cloud Computing with AWS",
-    description: "Master cloud services and become an AWS certified developer",
-    price: 149,
-    category: "Cloud",
-    image: "/course-5.jpg",
-    rating: 4.8,
-    students: 7000,
-    icon: "logos:aws"
-  },
-  {
-    id: 6,
-    title: "Digital Marketing Mastery",
-    description: "Learn SEO, Social Media Marketing, and Growth Strategies",
-    price: 79,
-    category: "Marketing",
-    image: "/course-6.jpg",
-    rating: 4.7,
-    students: 9000,
-    icon: "ph:trend-up-bold"
-  }
-];
+import { enrollmentService, type TopCourse } from "@/services/enrollment.service";
+import { getThumbnailUrl } from "@/lib/utils";
 
 const stats = [
   { icon: "ph:graduation-cap", value: "50K+", label: "Students" },
@@ -97,7 +33,25 @@ const features = [
   }
 ];
 
-export default function Home() {
+export default function HomePage() {
+  const [topCourses, setTopCourses] = useState<TopCourse[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchTopCourses = async () => {
+      try {
+        const data = await enrollmentService.getTopCourses(6);
+        setTopCourses(data);
+      } catch (error) {
+        console.error('Failed to fetch top courses:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchTopCourses();
+  }, []);
+
   return (
     <main className="min-h-screen bg-white">
       <section className="px-36 py-28 flex items-center justify-between bg-gradient-to-br from-[#47474710] to-[#47474717]">
@@ -184,60 +138,49 @@ export default function Home() {
           </p>
         </div>
         <div className="grid grid-cols-3 gap-10">
-          {featuredCourses.map((course) => (
+          {topCourses.map((course) => (
             <Card 
-              key={course.id} 
+              key={course.courseId} 
               className="p-6 bg-white hover:shadow-2xl transition-all duration-500 hover:-translate-y-2"
             >
               <CardHeader className="p-0">
-                <div className="relative w-full h-72">
+                <div className="relative aspect-video w-full">
                   <Image
-                    src={course.image}
-                    alt={course.title}
+                    src={getThumbnailUrl(course.courseDetails.thumbnail)}
+                    alt={course.courseDetails.title}
                     fill
                     priority
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     className="object-cover rounded-xl"
                   />
-                  <div className="absolute top-4 right-4">
-                    <Chip
-                      variant="flat"
-                      startContent={<Icon icon={course.icon} className="mr-2 text-lg" />}
-                      className="bg-black/80 backdrop-blur-sm text-white h-12 px-6 text-[1.2rem]"
-                    >
-                      {course.category}
-                    </Chip>
-                  </div>
                 </div>
               </CardHeader>
               <CardBody className="px-2 py-8">
                 <div className="flex items-center gap-4 mb-6">
-                  <div className="flex items-center gap-2">
-                    <Icon icon="ph:star-fill" className="text-yellow-400 text-2xl" />
-                    <span className="font-semibold text-xl">{course.rating}</span>
-                  </div>
                   <span className="text-gray-500 text-lg">
-                    ({course.students.toLocaleString()} students)
+                    {course.enrollmentCount.toLocaleString()} students enrolled
                   </span>
                 </div>
                 <h3 className="text-2xl font-bold mb-4 text-black hover:text-gray-700 transition-colors">
-                  {course.title}
+                  {course.courseDetails.title}
                 </h3>
-                <p className="text-lg text-gray-600 leading-relaxed">
-                  {course.description}
+                <p className="text-lg text-gray-600 leading-relaxed line-clamp-4">
+                  {course.courseDetails.description}
                 </p>
               </CardBody>
               <CardFooter className="px-2 pt-4 border-t flex justify-between items-center">
                 <div>
-                  <p className="text-3xl font-bold text-black">${course.price}</p>
+                  <p className="text-3xl font-bold text-black">${course.courseDetails.price}</p>
                   <p className="text-base text-gray-500">One-time payment</p>
                 </div>
-                <Button 
-                  className="bg-black text-white font-semibold text-lg h-12 px-8 hover:scale-105 transition-transform"
-                >
-                  Enroll Now
-                  <Icon icon="ph:arrow-right" className="ml-2" />
-                </Button>
+                <Link href={`/courses/${course.courseId}`}>
+                  <Button 
+                    className="bg-black text-white font-semibold text-lg h-12 px-8 hover:scale-105 transition-transform"
+                  >
+                    Enroll Now
+                    <Icon icon="ph:arrow-right" className="ml-2" />
+                  </Button>
+                </Link>
               </CardFooter>
             </Card>
           ))}
@@ -334,6 +277,7 @@ export default function Home() {
           </div>
         </div>
       </section>
+
     </main>
   );
 }

@@ -53,7 +53,7 @@ export default function ContactPage() {
               Get in Touch
             </h1>
             <p className="text-2xl text-gray-600 mb-12">
-              We'd love to hear from you. Our friendly team is always here to chat and help you succeed in your learning journey.
+              We&apos;d love to hear from you. Our friendly team is always here to chat and help you succeed in your learning journey.
             </p>
           </div>
 
@@ -83,7 +83,7 @@ export default function ContactPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-20">
             <div>
               <h2 className="text-4xl font-bold mb-6">
-                Let's discuss your learning needs
+                Let&apos;s discuss your learning needs
               </h2>
               <p className="text-xl text-gray-600 mb-12">
                 Fill out the form and our team will get back to you within 24 hours.
@@ -212,7 +212,7 @@ export default function ContactPage() {
           <h2 className="text-5xl font-bold mb-8">Ready to Start Learning?</h2>
           <p className="text-2xl text-gray-300 mb-12 max-w-4xl mx-auto">
             Join our community of learners and start your educational journey today.
-            We're here to support you every step of the way.
+            We&apos;re here to support you every step of the way.
           </p>
           <Button
             className="h-14 px-12 bg-white text-black text-lg font-medium hover:opacity-90 transition-opacity"

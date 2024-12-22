@@ -24,6 +24,7 @@ import Image from "next/image";
 import { toast } from "sonner";
 import { getThumbnailUrl } from "@/lib/utils";
 import { useRouter } from "next/navigation";
+import { enrollmentService, type EnrolledCourse } from "@/services/enrollment.service";
 
 export default function MainNavbar() {
   const { user, logout, isLoading } = useAuth();
@@ -33,6 +34,9 @@ export default function MainNavbar() {
   const [cart, setCart] = useState<Cart | null>(null);
   const [isLoadingCart, setIsLoadingCart] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [enrollments, setEnrollments] = useState<EnrolledCourse[]>([]);
+  const [isEnrollmentsLoading, setIsEnrollmentsLoading] = useState(false);
+  const [isEnrollmentsOpen, setIsEnrollmentsOpen] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -85,6 +89,12 @@ export default function MainNavbar() {
     };
   }, []);
 
+  useEffect(() => {
+    if (isEnrollmentsOpen && user) {
+      fetchEnrollments();
+    }
+  }, [isEnrollmentsOpen, user]);
+
   const fetchCart = async () => {
     if (!user) {
       setCart(null);
@@ -99,6 +109,18 @@ export default function MainNavbar() {
       console.error('Failed to fetch cart:', error);
     } finally {
       setIsLoadingCart(false);
+    }
+  };
+
+  const fetchEnrollments = async () => {
+    try {
+      setIsEnrollmentsLoading(true);
+      const data = await enrollmentService.getUserEnrollments();
+      setEnrollments(data);
+    } catch (error) {
+      console.error('Failed to fetch enrollments:', error);
+    } finally {
+      setIsEnrollmentsLoading(false);
     }
   };
 
@@ -371,6 +393,130 @@ export default function MainNavbar() {
             </div>
 
             <Dropdown 
+              placement="bottom-end" 
+              isOpen={isEnrollmentsOpen}
+              onOpenChange={(open) => setIsEnrollmentsOpen(open)}
+            >
+              <DropdownTrigger>
+                <Button 
+                  isIconOnly
+                  variant="light"
+                  className="mr-2"
+                >
+                  <Icon icon="ph:book-open" className="text-2xl" />
+                </Button>
+              </DropdownTrigger>
+              <DropdownMenu 
+                aria-label="My Learning"
+                className="w-[400px]"
+                itemClasses={{
+                  base: [
+                    "rounded-none",
+                    "text-default-500",
+                    "transition-opacity",
+                    "data-[hover=true]:text-foreground",
+                    "data-[hover=true]:bg-default-100",
+                    "dark:data-[hover=true]:bg-default-50",
+                    "data-[selectable=true]:focus:bg-default-50",
+                    "data-[pressed=true]:opacity-70",
+                    "data-[focus-visible=true]:ring-default-500",
+                  ],
+                }}
+              >
+                <DropdownSection>
+                  <DropdownItem
+                    key="header" 
+                    className="p-4 hover:bg-transparent cursor-default border-b border-divider" 
+                    isReadOnly 
+                  >
+                    <span className="text-2xl font-semibold">My Learning</span>
+                  </DropdownItem>
+                  
+                  {isEnrollmentsLoading ? (
+                    <DropdownItem key="loading" className="h-[200px] flex items-center justify-center" isReadOnly>
+                      <div className="flex items-center justify-center w-full">
+                        <span className="w-8 h-8 border-2 border-black border-t-transparent rounded-full animate-spin" />
+                      </div>
+                    </DropdownItem>
+                  ) : enrollments.length > 0 ? (
+                    <>
+                      {enrollments.map((enrollment) => (
+                        <DropdownItem
+                          key={enrollment._id}
+                          className="py-4 px-4"
+                          as={Link}
+                          href={`/courses/${enrollment.course._id}`}
+                        >
+                          <Card className="shadow-none bg-transparent">
+                            <CardBody className="p-0">
+                              <div className="flex gap-4">
+                                <div className="relative aspect-video w-[120px] rounded-lg overflow-hidden">
+                                  <Image
+                                    src={getThumbnailUrl(enrollment.course.thumbnail)}
+                                    alt={enrollment.course.title}
+                                    fill
+                                    sizes="120px"
+                                    className="object-cover"
+                                  />
+                                </div>
+                                <div className="flex-1">
+                                  <p className="font-medium text-base line-clamp-2">
+                                    {enrollment.course.title}
+                                  </p>
+                                  <div className="mt-2">
+                                    <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                                      <div 
+                                        className="h-full bg-black rounded-full"
+                                        style={{ width: `${Math.random() * 100}%` }}
+                                      />
+                                    </div>
+                                    <p className="text-sm text-gray-500 mt-1">
+                                      {Math.floor(Math.random() * 100)}% complete
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
+                            </CardBody>
+                          </Card>
+                        </DropdownItem>
+                      ))}
+                      <DropdownItem
+                        key="all-courses"
+                        className="p-4 border-t border-divider"
+                        as={Link}
+                        href="/dashboard/courses"
+                      >
+                        <Button 
+                          className="w-full bg-black text-white font-semibold"
+                          size="lg"
+                        >
+                          Go to My Learning
+                        </Button>
+                      </DropdownItem>
+                    </>
+                  ) : (
+                    <DropdownItem key="empty" className="py-12" isReadOnly>
+                      <div className="text-center">
+                        <Icon icon="ph:book-open" className="text-4xl text-gray-400 mb-4" />
+                        <p className="text-xl font-medium text-gray-900">No courses yet</p>
+                        <p className="text-sm text-gray-500 mt-1">Start learning today!</p>
+                        <Button
+                          as={Link}
+                          href="/courses"
+                          variant="light"
+                          className="mt-4 text-base font-medium"
+                          onPress={() => setIsEnrollmentsOpen(false)}
+                        >
+                          Browse Courses
+                        </Button>
+                      </div>
+                    </DropdownItem>
+                  )}
+                </DropdownSection>
+              </DropdownMenu>
+            </Dropdown>
+
+            <Dropdown 
               placement="bottom-end"
               classNames={{
                 base: "min-w-[220px] p-0",
@@ -441,16 +587,16 @@ export default function MainNavbar() {
                   Login
                 </Button>
               </Link>
-            </NavbarItem>
-            <NavbarItem>
+        </NavbarItem>
+        <NavbarItem>
               <Link href="/signup">
                 <Button 
                   className="bg-black text-white font-semibold text-lg h-14 px-8 hover:scale-105 transition-transform"
                 >
-                  Sign Up
-                </Button>
+            Sign Up
+          </Button>
               </Link>
-            </NavbarItem>
+        </NavbarItem>
           </>
         )}
       </NavbarContent>

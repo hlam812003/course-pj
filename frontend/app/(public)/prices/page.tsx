@@ -169,7 +169,7 @@ export default function PricingPage() {
                 </Button>
 
                 <div className="space-y-4">
-                  <p className="text-base font-medium">What's included:</p>
+                  <p className="text-base font-medium">What&apos;s included:</p>
                   {plan.features.map((feature) => (
                     <div key={feature} className="flex items-center gap-3">
                       <Icon icon="ph:check-circle" className="text-xl text-gray-400" />
@@ -188,7 +188,7 @@ export default function PricingPage() {
           <div className="text-center mb-12">
             <h2 className="text-6xl font-bold mb-6">Frequently Asked Questions</h2>
             <p className="text-2xl text-gray-600">
-              Have questions? We're here to help.
+              Have questions? We&apos;re here to help.
             </p>
           </div>
 
@@ -211,7 +211,7 @@ export default function PricingPage() {
 
           <div className="text-center mt-12">
             <p className="text-2xl text-gray-600 mb-6">
-              Still have questions? We're happy to help!
+              Still have questions? We&apos;re happy to help!
             </p>
             <Button
               as={Link}
