@@ -11,6 +11,9 @@ async function enrollmentRoutes(fastify, options) {
     preHandler: middlewaresController.verifyUserToken,
     handler: enrollmentController.getEnrollmentsByUserId,
   });
+  fastify.get("/enrollments/top/:limit", {
+    handler: enrollmentController.getTopEnrolledCourses,
+  });
 
   fastify.post("/enrollments", {
     preHandler: middlewaresController.verifyUserToken,

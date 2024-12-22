@@ -2,6 +2,56 @@ import { Enrollment } from "../models/enrollment.js";
 import mongoose from "mongoose";
 
 export const enrollmentController = {
+  // Get courses with the highest number of enrollments
+  getTopEnrolledCourses: async (request, reply) => {
+    try {
+      const { limit } = request.params;
+
+      // Aggregate to count enrollments per course
+      const topCourses = await Enrollment.aggregate([
+        {
+          $group: {
+            _id: "$course", // Group by course ID
+            enrollmentCount: { $sum: 1 }, // Count enrollments
+          },
+        },
+        {
+          $sort: { enrollmentCount: -1 }, // Sort by enrollment count descending
+        },
+        {
+          $limit: limit ? parseInt(limit, 10) : 10, // Limit the number of results
+        },
+        {
+          $lookup: {
+            from: "courses", // Collection to join (assuming collection name is 'courses')
+            localField: "_id", // Field in this collection
+            foreignField: "_id", // Field in 'courses' collection
+            as: "courseDetails", // Alias for the joined data
+          },
+        },
+        {
+          $unwind: "$courseDetails", // Unwind the course details array
+        },
+        {
+          $project: {
+            _id: 0, // Exclude the internal MongoDB ID
+            courseId: "$_id", // Include course ID
+            enrollmentCount: 1, // Include enrollment count
+            courseDetails: 1, // Include course details
+          },
+        },
+      ]);
+
+      return reply.status(200).send(topCourses);
+    } catch (error) {
+      console.error("Error fetching top enrolled courses:", error);
+      return reply.status(500).send({
+        message: "Error fetching top enrolled courses",
+        error: error.message,
+      });
+    }
+  },
+
   // Enroll a user in a course
   enrollInCourse: async (request, reply) => {
     try {
