@@ -21,6 +21,9 @@ import { Icon } from "@iconify/react";
 import { useState, useEffect } from "react";
 import { cartService, type Cart } from "@/services/cart.service";
 import Image from "next/image";
+import { toast } from "sonner";
+import { getThumbnailUrl } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 export default function MainNavbar() {
   const { user, logout, isLoading } = useAuth();
@@ -30,6 +33,7 @@ export default function MainNavbar() {
   const [cart, setCart] = useState<Cart | null>(null);
   const [isLoadingCart, setIsLoadingCart] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const controlNavbar = () => {
@@ -70,7 +74,23 @@ export default function MainNavbar() {
     }
   }, [isCartOpen]);
 
+  useEffect(() => {
+    const handleCartUpdate = () => {
+      fetchCart();
+    };
+
+    window.addEventListener('cart-updated', handleCartUpdate);
+    return () => {
+      window.removeEventListener('cart-updated', handleCartUpdate);
+    };
+  }, []);
+
   const fetchCart = async () => {
+    if (!user) {
+      setCart(null);
+      return;
+    }
+
     try {
       setIsLoadingCart(true);
       const cartData = await cartService.getCart();
@@ -83,21 +103,39 @@ export default function MainNavbar() {
   };
 
   const handleRemoveFromCart = async (courseId: string) => {
+    if (!user) {
+      toast.error('Please login to manage cart');
+      router.push('/login');
+      return;
+    }
+
     try {
       await cartService.removeFromCart(courseId);
       await fetchCart();
+      toast.success('Course removed from cart');
     } catch (error) {
-      console.error('Failed to remove from cart:', error);
+      toast.error(error instanceof Error ? error.message : 'Failed to remove course from cart');
     }
   };
 
   const handleClearCart = async () => {
+    if (!user) {
+      toast.error('Please login to manage cart');
+      router.push('/login');
+      return;
+    }
+
     try {
       await cartService.clearCart();
       await fetchCart();
     } catch (error) {
-      console.error('Failed to clear cart:', error);
+      toast.error(error instanceof Error ? error.message : 'Failed to clear cart');
     }
+  };
+
+  const getCategoryDisplay = (category: string | { name: string }) => {
+    if (typeof category === 'string') return category;
+    return category?.name || 'Uncategorized';
   };
 
   return (
@@ -171,7 +209,7 @@ export default function MainNavbar() {
                 <DropdownMenu 
                   aria-label="Shopping Cart"
                   className="w-[350px]"
-                  disabledKeys={["empty", "total"]}
+                  disabledKeys={["total"]}
                   itemClasses={{
                     base: [
                       "rounded-none",
@@ -216,28 +254,26 @@ export default function MainNavbar() {
                           >
                             <Card className="shadow-none bg-transparent">
                               <CardBody className="p-0">
-                                <div className="flex items-center gap-4">
-                                  <div className="relative aspect-video w-[80px] h-[60px] overflow-hidden flex-shrink-0">
+                                <div className="flex gap-4">
+                                  <div className="relative aspect-video w-[120px] rounded-lg overflow-hidden">
                                     <Image
-                                      src={item.course.thumbnail}
+                                      src={getThumbnailUrl(item.course.thumbnail)}
                                       alt={item.course.title}
                                       fill
                                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                       className="object-cover"
                                     />
                                   </div>
-                                  <div className="flex-1 min-w-0">
-                                    <p className="font-medium text-base line-clamp-1">
+                                  <div className="flex-1">
+                                    <p className="font-medium text-base line-clamp-2">
                                       {item.course.title}
                                     </p>
                                     <p className="text-sm text-gray-500 mt-1">
-                                      {typeof item.course.category === 'string' ? item.course.category : item.course.category.name} • {item.course.level}
+                                      {getCategoryDisplay(item.course.category)} • {item.course.level || 'All Levels'}
                                     </p>
                                     <div className="flex items-center justify-between mt-2">
                                       <span className="font-semibold text-base">${item.course.price}</span>
                                       <Button
-                                        isIconOnly
-                                        size="sm"
                                         variant="light"
                                         className="text-danger"
                                         onPress={() => handleRemoveFromCart(item.course._id)}

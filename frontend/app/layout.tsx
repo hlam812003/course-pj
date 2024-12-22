@@ -4,6 +4,7 @@ import "./globals.css";
 import { Providers } from "./providers";
 import { AuthProvider } from "@/contexts/auth.context";
 import { cn } from "@/lib/utils";
+import { Toaster } from "sonner";
 
 const fontInter = Inter({
   subsets: ["latin"],
@@ -30,6 +31,7 @@ export default function RootLayout({
         <Providers>
           <AuthProvider>
             {children}
+            <Toaster position="bottom-right" richColors />
           </AuthProvider>
         </Providers>
       </body>

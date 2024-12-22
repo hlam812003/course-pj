@@ -41,12 +41,20 @@ class CartService {
   }
 
   async addToCart(courseId: string): Promise<CartResponse> {
-    const { data } = await axios.post(
-      `${this.API_URL}/shoppingCart/course/${courseId}`, 
-      { courseId }, 
-      this.getConfig()
-    );
-    return data;
+    try {
+      const { data } = await axios.post<CartResponse>(
+        `${this.API_URL}/shoppingCart/course/${courseId}`,
+        {},
+        this.getConfig()
+      );
+      return data;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const errorMessage = error.response?.data?.message || 'Failed to add course to cart';
+        throw new Error(errorMessage);
+      }
+      throw error;
+    }
   }
 
   async updateCart(courses: CartItem[]): Promise<CartResponse> {

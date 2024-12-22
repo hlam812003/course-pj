@@ -5,51 +5,69 @@ import mongoose from "mongoose";
 export const shoppingCartController = {
   addCourseToCart: async (request, reply) => {
     try {
-      const { courseId } = request.params; // Chỉ nhận courseId từ params
-      const userId = request.user.payload.id; // Lấy userId từ request.user (JWT middleware)
+      const { courseId } = request.params;
+      const userId = request.user.payload.id;
 
       if (!mongoose.Types.ObjectId.isValid(userId)) {
-        return reply.status(400).send({ message: "Invalid user ID" });
+        reply.status(400).send({ message: "Invalid user ID" });
+        return;
       }
 
       if (!mongoose.Types.ObjectId.isValid(courseId)) {
-        return reply.status(400).send({ message: "Invalid course ID" });
+        reply.status(400).send({ message: "Invalid course ID" });
+        return;
       }
 
       const courseDetails = await Course.findById(courseId);
       if (!courseDetails) {
-        return reply.status(404).send({ message: "Course not found" });
+        reply.status(404).send({ message: "Course not found" });
+        return;
       }
 
       // Tìm giỏ hàng của người dùng
-      let cart = await shoppingCart.findOne({ user: userId });
+      let cart = await shoppingCart.findOne({ user: userId })
+        .populate('courses.course', '_id'); // Chỉ populate _id để kiểm tra
 
       if (cart) {
-        // Kiểm tra khóa học đã tồn tại chưa
-        const existingCourse = cart.courses.find((item) =>
-          item.course.equals(courseId)
+        // Kiểm tra khóa học đã tồn tại chưa bằng cách so sánh string
+        const existingCourse = cart.courses.find(
+          (item) => item.course._id.toString() === courseId
         );
 
         if (existingCourse) {
-          existingCourse.quantity += 1; // Tăng số lượng
-        } else {
-          cart.courses.push({ course: courseId, quantity: 1 }); // Thêm khóa học mới
+          reply.status(400).send({ 
+            message: "This course is already in your cart"
+          });
+          return;
         }
 
+        cart.courses.push({ course: courseId, quantity: 1 });
+        
         // Tính lại tổng tiền
         let totalAmount = 0;
         for (const { course, quantity } of cart.courses) {
           const courseInfo = await Course.findById(course);
-          totalAmount += courseInfo.price * quantity;
+          if (courseInfo) {
+            totalAmount += courseInfo.price * quantity;
+          }
         }
+        
         cart.totalAmount = totalAmount;
         cart.updatedAt = Date.now();
 
         await cart.save();
-        return reply.status(200).send({
+        
+        // Populate đầy đủ thông tin course trước khi trả về
+        await cart.populate({
+          path: "courses.course",
+          select: "title price description imageUrl"
+        });
+
+        reply.status(200).send({
           message: "Course added to cart successfully",
           cart,
         });
+        return;
       } else {
         // Tạo giỏ hàng mới nếu chưa tồn tại
         cart = new shoppingCart({
@@ -59,17 +77,24 @@ export const shoppingCartController = {
         });
 
         await cart.save();
-        return reply.status(201).send({
+        await cart.populate({
+          path: "courses.course",
+          select: "title price description imageUrl"
+        });
+
+        reply.status(201).send({
           message: "New cart created with the course",
           cart,
         });
+        return;
       }
     } catch (error) {
       console.error("Error adding course to cart:", error);
-      return reply.status(500).send({
+      reply.status(500).send({
         message: "Error adding course to cart",
         error: error.message,
       });
+      return;
     }
   },
 
@@ -143,43 +168,55 @@ export const shoppingCartController = {
       const { userId } = request.params;
 
       if (!mongoose.Types.ObjectId.isValid(userId)) {
-        return reply.status(400).send({ message: "Invalid user ID" });
+        reply.status(400).send({ message: "Invalid user ID" });
+        return;
       }
 
       const cart = await shoppingCart
         .findOne({ user: userId })
-        .populate("courses.course");
+        .populate({
+          path: "courses.course",
+          select: "title price description imageUrl"
+        });
 
       if (!cart) {
-        return reply.status(404).send({ message: "Cart not found" });
+        reply.status(404).send({ message: "Cart not found" });
+        return;
       }
 
-      return reply.status(200).send(cart);
+      reply.status(200).send(cart);
+      return;
     } catch (error) {
       console.error("Error fetching cart:", error);
-      return reply
-        .status(500)
-        .send({ message: "Error fetching cart", error: error.message });
+      reply.status(500).send({ 
+        message: "Error fetching cart", 
+        error: error.message 
+      });
+      return;
     }
   },
 
   // Remove a course from the shopping cart
   removeCourseFromCart: async (request, reply) => {
     try {
-      const { userId, courseId } = request.params;
+      const { courseId } = request.params;
+      const userId = request.user.payload.id; // Lấy userId từ token
 
       if (!mongoose.Types.ObjectId.isValid(userId)) {
-        return reply.status(400).send({ message: "Invalid user ID" });
+        reply.status(400).send({ message: "Invalid user ID" });
+        return;
       }
 
       if (!mongoose.Types.ObjectId.isValid(courseId)) {
-        return reply.status(400).send({ message: "Invalid course ID" });
+        reply.status(400).send({ message: "Invalid course ID" });
+        return;
       }
 
       const cart = await shoppingCart.findOne({ user: userId });
 
       if (!cart) {
-        return reply.status(404).send({ message: "Cart not found" });
+        reply.status(404).send({ message: "Cart not found" });
+        return;
       }
 
       // Remove the course from the cart
@@ -191,7 +228,9 @@ export const shoppingCartController = {
       let totalAmount = 0;
       for (const { course, quantity } of cart.courses) {
         const courseDetails = await Course.findById(course);
-        totalAmount += courseDetails.price * quantity;
+        if (courseDetails) {
+          totalAmount += courseDetails.price * quantity;
+        }
       }
 
       cart.totalAmount = totalAmount;
@@ -199,15 +238,24 @@ export const shoppingCartController = {
 
       await cart.save();
 
-      return reply
-        .status(200)
-        .send({ message: "Course removed from cart", cart });
+      // Populate course details before sending response
+      await cart.populate({
+        path: "courses.course",
+        select: "title price description imageUrl"
+      });
+
+      reply.status(200).send({ 
+        message: "Course removed from cart", 
+        cart 
+      });
+      return;
     } catch (error) {
       console.error("Error removing course from cart:", error);
-      return reply.status(500).send({
+      reply.status(500).send({
         message: "Error removing course from cart",
         error: error.message,
       });
+      return;
     }
   },
 

@@ -8,24 +8,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { cartService } from "@/services/cart.service";
 import { lessonsService, type LessonsResponse } from "@/services/lessons.service";
-
-const DEFAULT_THUMBNAIL = "https://images.unsplash.com/photo-1522202176988-66273c2fd55f";
-
-function getThumbnailUrl(thumbnail: string | undefined | null): string {
-  if (!thumbnail) return DEFAULT_THUMBNAIL;
-  
-  if (thumbnail.includes('youtube.com') || thumbnail.includes('youtu.be')) {
-    const videoId = thumbnail.split('/').pop()?.split('?')[0];
-    return `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
-  }
-
-  try {
-    new URL(thumbnail);
-    return thumbnail;
-  } catch {
-    return DEFAULT_THUMBNAIL;
-  }
-}
+import { getThumbnailUrl } from "@/lib/utils";
+import { toast } from "sonner";
+import { useAuth } from "@/contexts/auth.context";
+import { useRouter } from "next/navigation";
 
 function formatDate(dateString: string) {
   return new Date(dateString).toLocaleDateString('en-US', {
@@ -62,6 +48,9 @@ export default function CourseDetailPage({ params }: { params: { id: string } })
   const [error, setError] = useState<string | null>(null);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [lessons, setLessons] = useState<LessonsResponse | null>(null);
+  const [isEnrolling, setIsEnrolling] = useState(false);
+  const { user } = useAuth();
+  const router = useRouter();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -86,11 +75,19 @@ export default function CourseDetailPage({ params }: { params: { id: string } })
   }, [params.id]);
 
   const handleAddToCart = async () => {
+    if (!user) {
+      toast.error('Please login to add courses to cart');
+      router.push('/login');
+      return;
+    }
+
     try {
       setIsAddingToCart(true);
-      await cartService.addToCart(params.id);
+      await cartService.addToCart(course?._id || '');
+      window.dispatchEvent(new Event('cart-updated'));
+      toast.success('Course added to cart successfully');
     } catch (error) {
-      console.error('Failed to add to cart:', error);
+      toast.error(error instanceof Error ? error.message : 'Failed to add course to cart');
     } finally {
       setIsAddingToCart(false);
     }
@@ -105,6 +102,25 @@ export default function CourseDetailPage({ params }: { params: { id: string } })
     const hours = Math.floor(totalMinutes / 60);
     const minutes = Math.round(totalMinutes % 60);
     return `${hours}h ${minutes}m`;
+  };
+
+  const handleEnrollAndCheckout = async () => {
+    if (!user) {
+      toast.error('Please login to enroll in courses');
+      router.push('/login');
+      return;
+    }
+
+    try {
+      setIsEnrolling(true);
+      await cartService.addToCart(course?._id || '');
+      router.push('/checkout');
+      toast.success('Course added to cart. Proceeding to checkout...');
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Failed to proceed to checkout');
+    } finally {
+      setIsEnrolling(false);
+    }
   };
 
   if (isLoading) {
@@ -376,9 +392,11 @@ export default function CourseDetailPage({ params }: { params: { id: string } })
                     Add to Cart
                   </Button>
                   <Button 
-                    className="w-full bg-black text-white font-semibold h-14 text-xl"
+                    className="w-full h-16 bg-black text-white font-semibold text-xl hover:opacity-90 transition-opacity"
+                    isLoading={isEnrolling}
+                    onPress={handleEnrollAndCheckout}
                   >
-                    Enroll Now
+                    {isEnrolling ? 'Processing...' : 'Enroll Now'}
                   </Button>
                 </div>
               </CardBody>

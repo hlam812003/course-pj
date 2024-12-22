@@ -6,24 +6,7 @@ import { coursesService, type Course, type User, type Category } from "@/service
 import { Icon } from "@iconify/react";
 import Image from "next/image";
 import Link from "next/link";
-
-const DEFAULT_THUMBNAIL = "https://images.unsplash.com/photo-1522202176988-66273c2fd55f";
-
-function getThumbnailUrl(thumbnail: string | undefined | null): string {
-  if (!thumbnail) return DEFAULT_THUMBNAIL;
-  
-  if (thumbnail.includes('youtube.com') || thumbnail.includes('youtu.be')) {
-    const videoId = thumbnail.split('/').pop()?.split('?')[0];
-    return `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
-  }
-
-  try {
-    new URL(thumbnail);
-    return thumbnail;
-  } catch {
-    return DEFAULT_THUMBNAIL;
-  }
-}
+import { getThumbnailUrl } from "@/lib/utils";
 
 function isUser(instructor: string | User): instructor is User {
   return typeof instructor === 'object' && 'username' in instructor;
